@@ -24,6 +24,8 @@
 
 /* One found book; the whole row is the radio's label, so all of it can be tapped. */
 .row {
+  /* As tall as the dock, which floats over the foot of the screen: see ResultRow. */
+  scroll-margin-block: 12px 230px;
   display: flex;
   align-items: center;
   gap: 14px;

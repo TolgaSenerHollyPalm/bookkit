@@ -223,7 +223,18 @@ function ResultRow({ row, name, chosen, onChoose }: { row: Row; name: string; ch
   return (
     <label className={chosen ? `${styles.row} ${styles.chosen}` : styles.row}>
       {body}
-      <input className={styles.radio} type="radio" name={name} checked={chosen} onChange={onChoose} />
+      <input
+        className={styles.radio}
+        type="radio"
+        name={name}
+        checked={chosen}
+        onChange={(event) => {
+          onChoose()
+          // The dock this choice brings covers the foot of the screen; a row chosen down there moves up clear of it.
+          const row = event.currentTarget.closest('label')
+          requestAnimationFrame(() => row?.scrollIntoView({ block: 'nearest' }))
+        }}
+      />
     </label>
   )
 }
