@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { displayTitle, findSame, matchKey, sameBook } from './match.ts'
+import { findSame, matchKey, sameBook } from './match.ts'
 
 describe('matchKey', () => {
   it('folds case, spacing and Turkish letters', () => {
@@ -62,29 +62,5 @@ describe('findSame', () => {
     expect(findSame(library, { title: 'huzur', authors: ['ahmet hamdi tanpinar'] })?.id).toBe('a')
     expect(findSame(library, { title: 'huzur', authors: ['ahmet hamdi tanpinar'] }, 'a')).toBeUndefined()
     expect(findSame(library, { title: 'Tutunamayanlar', authors: ['Oğuz Atay'] })).toBeUndefined()
-  })
-})
-
-describe('displayTitle', () => {
-  it('gives a title written all in capitals its capitals back, the Turkish way', () => {
-    expect(displayTitle('SAATLERİ AYARLAMA ENSTİTÜSÜ')).toBe('Saatleri Ayarlama Enstitüsü')
-    expect(displayTitle('BENİM ADIM KIRMIZI')).toBe('Benim Adım Kırmızı')
-    expect(displayTitle('AŞK-I MEMNU')).toBe('Aşk-ı Memnu')
-    expect(displayTitle('(TAM METİN) HUZUR')).toBe('(Tam Metin) Huzur')
-  })
-
-  it('keeps the small words small, except as the first word', () => {
-    expect(displayTitle('SUÇ VE CEZA')).toBe('Suç ve Ceza')
-    expect(displayTitle('VE SONRA')).toBe('Ve Sonra')
-  })
-
-  it('leaves alone a title that is not all capitals', () => {
-    expect(displayTitle('Huzur')).toBe('Huzur')
-    expect(displayTitle('iPhone ile Fotoğraf')).toBe('iPhone ile Fotoğraf')
-    expect(displayTitle('1984')).toBe('1984')
-  })
-
-  it('lowers an I to i when told the title is not Turkish', () => {
-    expect(displayTitle('THE SHINING', 'en')).toBe('The Shining')
   })
 })

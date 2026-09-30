@@ -32,18 +32,3 @@ export function sameBook(a: Matchable, b: Matchable): boolean {
 export function findSame<T extends Matchable & { id: string }>(books: readonly T[], candidate: Matchable, exceptId?: string): T | undefined {
   return books.find((book) => book.id !== exceptId && sameBook(book, candidate))
 }
-
-const SMALL_WORDS = new Set(['ve', 'ile', 'de', 'da', 'ki', 'mi'])
-
-/**
- * "SAATLERİ AYARLAMA ENSTİTÜSÜ" → "Saatleri Ayarlama Enstitüsü". Only a title written all in capitals is touched;
- * `locale` is Turkish unless the caller knows better, since "I" lowers to "ı" in Turkish and to "i" elsewhere.
- */
-export function displayTitle(title: string, locale = 'tr'): string {
-  const lower = title.toLocaleLowerCase(locale)
-  if (title !== title.toLocaleUpperCase(locale) || title === lower) return title
-  return lower
-    .split(' ')
-    .map((word, index) => (index > 0 && SMALL_WORDS.has(word) ? word : word.replace(/\p{L}/u, (letter) => letter.toLocaleUpperCase(locale))))
-    .join(' ')
-}
