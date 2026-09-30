@@ -7,7 +7,10 @@ describe('routes', () => {
     { screen: 'home', tab: 'want' },
     { screen: 'home', tab: 'read' },
     { screen: 'settings' },
+    { screen: 'add' },
     { screen: 'add-manual' },
+    { screen: 'add-manual', title: 'Roma’nın Beş Günü? & başka' },
+    { screen: 'add-manual', isbn: '9789750868702' },
     { screen: 'book', bookId: 'a1b2' },
     { screen: 'book', bookId: 'ç/ş ?' },
     { screen: 'book-edit', bookId: 'a1b2' },
@@ -22,6 +25,12 @@ describe('routes', () => {
     expect(parseRoute('#/book')).toEqual({ screen: 'home' })
     expect(parseRoute('#/book/%E0%A4%A')).toEqual({ screen: 'home' })
     expect(parseRoute('#/book/x/unknown')).toEqual({ screen: 'book', bookId: 'x' })
+  })
+
+  it('tells the search from the form that adds by hand', () => {
+    expect(parseRoute('#/add')).toEqual({ screen: 'add' })
+    expect(parseRoute('#/add/manual?title=Bekle+Beni')).toEqual({ screen: 'add-manual', title: 'Bekle Beni' })
+    expect(parseRoute('#/add/manual?title=')).toEqual({ screen: 'add-manual' })
   })
 
   it('counts the library as one screen whatever its tab', () => {

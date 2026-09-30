@@ -37,7 +37,7 @@ const EMPTY_FILTER: Record<NoteFilter, string> = {
 const STATUS_TONE: Record<BookStatus, 'accent' | 'neutral' | 'quiet'> = { want: 'neutral', reading: 'accent', read: 'accent', abandoned: 'quiet' }
 
 export default function BookScreen({ bookId }: { bookId: string }) {
-  const { book, saveBook, deleteBook } = useBook(bookId)
+  const { book, cover, saveBook, deleteBook } = useBook(bookId)
   const show = useToast()
   const ratingId = useId()
   const [filter, setFilter] = useState<NoteFilter>('all')
@@ -78,7 +78,7 @@ export default function BookScreen({ bookId }: { bookId: string }) {
   return (
     <Screen
       title={book.title}
-      mark={<BookCover book={book} size="page" />}
+      mark={<BookCover book={book} size="page" src={cover} />}
       subtitle={
         <span className={styles.meta}>
           {book.authors.length > 0 && <span className={styles.authors}>{authorLine(book)}</span>}

@@ -20,14 +20,14 @@ const PLACES: { value: NewBook['status']; label: string }[] = [
   { value: 'read', label: STATUS_LABELS.read },
 ]
 
-/** Adds a book by typing it in: for the ones a search does not find. */
-export default function AddBookScreen() {
+/** Adds a book by typing it in: for the ones a search does not find. It starts with what the search was for. */
+export default function AddBookScreen({ title: searched = '', isbn: searchedIsbn = '' }: { title?: string; isbn?: string }) {
   const { books, saveBook } = useAppData()
   const show = useToast()
   const id = useId()
-  const [title, setTitle] = useState('')
+  const [title, setTitle] = useState(searched)
   const [authors, setAuthors] = useState('')
-  const [isbnText, setIsbnText] = useState('')
+  const [isbnText, setIsbnText] = useState(searchedIsbn)
   const [status, setStatus] = useState<NewBook['status']>('want')
   const [finishedAt, setFinishedAt] = useState('')
   const [tried, setTried] = useState(false)
@@ -61,7 +61,7 @@ export default function AddBookScreen() {
   return (
     <Screen
       title="Elle ekle"
-      back={href({ screen: 'home' })}
+      back={href({ screen: 'add' })}
       footer={
         <Button variant="primary" big disabled={candidate.title === ''} onClick={submit}>
           {warned ? 'Yine de ekle' : 'Kitaplığa ekle'}

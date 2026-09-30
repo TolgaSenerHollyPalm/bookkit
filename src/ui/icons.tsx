@@ -10,6 +10,15 @@ export function BookOpenIcon({ size = 14, strokeWidth = 2 }: IconProps) {
   )
 }
 
+export function SearchIcon({ size = 20, strokeWidth = 2 }: IconProps) {
+  return (
+    <svg {...lineIcon(size, strokeWidth)}>
+      <circle cx="10.5" cy="10.5" r="6.5" />
+      <path d="M15.5 15.5L20 20" />
+    </svg>
+  )
+}
+
 export function StarIcon({ size = 24, strokeWidth = 1.8, filled }: IconProps & { filled?: boolean }) {
   return (
     <svg {...lineIcon(size, strokeWidth)} fill={filled ? 'currentColor' : 'none'}>

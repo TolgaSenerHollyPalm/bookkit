@@ -7,6 +7,7 @@ import AddBookScreen from '../screens/AddBookScreen.tsx'
 import BookScreen from '../screens/BookScreen.tsx'
 import EditBookScreen from '../screens/EditBookScreen.tsx'
 import HomeScreen from '../screens/HomeScreen.tsx'
+import SearchScreen from '../screens/SearchScreen.tsx'
 import SettingsScreen from '../screens/SettingsScreen.tsx'
 import AppDataProvider from './AppDataProvider.tsx'
 import { screenKey, useRoute, type Route } from './router.ts'
@@ -41,8 +42,10 @@ function CurrentScreen({ route }: { route: Route }) {
       return <HomeScreen tab={route.tab} />
     case 'settings':
       return <SettingsScreen />
+    case 'add':
+      return <SearchScreen />
     case 'add-manual':
-      return <AddBookScreen />
+      return <AddBookScreen title={route.title} isbn={route.isbn} />
     case 'book':
       return <BookScreen bookId={route.bookId} />
     case 'book-edit':

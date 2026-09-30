@@ -21,7 +21,7 @@ import styles from './HomeScreen.module.css'
 
 /** The library: three lists of books, and the newest note under them. */
 export default function HomeScreen({ tab }: { tab?: Tab }) {
-  const { books } = useAppData()
+  const { books, covers } = useAppData()
   const panelId = useId()
   const now = today()
   const selected = tab ?? initialTab(books)
@@ -49,7 +49,7 @@ export default function HomeScreen({ tab }: { tab?: Tab }) {
         </>
       }
       footer={
-        <LinkButton to={href({ screen: 'add-manual' })} variant="primary" big>
+        <LinkButton to={href({ screen: 'add' })} variant="primary" big>
           <PlusIcon size={20} strokeWidth={2.2} />
           Kitap ekle
         </LinkButton>
@@ -76,7 +76,7 @@ export default function HomeScreen({ tab }: { tab?: Tab }) {
             panelId={panelId}
           />
           <div id={panelId} className={styles.books} role="tabpanel" aria-label={TAB_LABELS[selected]}>
-            {shown.length === 0 ? <p className={styles.empty}>{EMPTY_TAB[selected]}</p> : shown.map((book) => <BookCard key={book.id} book={book} today={now} />)}
+            {shown.length === 0 ? <p className={styles.empty}>{EMPTY_TAB[selected]}</p> : shown.map((book) => <BookCard key={book.id} book={book} cover={covers.get(book.id)} today={now} />)}
           </div>
 
           {last && (
@@ -101,10 +101,10 @@ export default function HomeScreen({ tab }: { tab?: Tab }) {
   )
 }
 
-function BookCard({ book, today: now }: { book: Book; today: Day }) {
+function BookCard({ book, cover, today: now }: { book: Book; cover?: string; today: Day }) {
   return (
     <a className={styles.card} href={href({ screen: 'book', bookId: book.id })}>
-      <BookCover book={book} size="card" />
+      <BookCover book={book} size="card" src={cover} />
       <span className={styles.cardBody}>
         <span className={styles.cardTitle}>{book.title}</span>
         {book.authors.length > 0 && <span className={styles.cardAuthor}>{authorLine(book)}</span>}

@@ -5,7 +5,7 @@ import { DATA_VERSION, migrateBook } from './migrations.ts'
 
 /** A cover picture as it was downloaded; `url` is where it came from. */
 export interface StoredCover {
-  blob: Blob
+  bytes: ArrayBuffer // not a Blob: Safari's IndexedDB has had trouble storing Blobs, and this was not tried on an iPhone
   type: string
   url: string
 }
@@ -72,6 +72,28 @@ export async function deleteBook(bookId: string): Promise<void> {
   const db = await database()
   const tx = db.transaction(['books', 'covers'], 'readwrite')
   await Promise.all([tx.objectStore('books').delete(bookId), tx.objectStore('covers').delete(bookId), tx.done])
+}
+
+export async function loadCovers(): Promise<Map<string, StoredCover>> {
+  const db = await database()
+  const store = db.transaction('covers').store
+  const [ids, covers] = await Promise.all([store.getAllKeys(), store.getAll()])
+  return new Map(ids.map((id, index) => [id, covers[index]]))
+}
+
+/** Keeps a downloaded cover, unless its book was deleted or pointed at another cover while it was on its way. */
+export async function saveCover(bookId: string, cover: StoredCover): Promise<boolean> {
+  const db = await database()
+  const tx = db.transaction(['books', 'covers'], 'readwrite')
+  const wanted = (await tx.objectStore('books').get(bookId))?.coverUrl === cover.url
+  if (wanted) await tx.objectStore('covers').put(cover, bookId)
+  await tx.done
+  return wanted
+}
+
+export async function deleteCover(bookId: string): Promise<void> {
+  const db = await database()
+  await db.delete('covers', bookId)
 }
 
 /** Asks the browser not to clear our data when the device runs low on space. */

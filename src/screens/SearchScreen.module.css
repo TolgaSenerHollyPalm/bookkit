@@ -1,0 +1,262 @@
+.search {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hint {
+  margin: 0 4px;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--color-muted);
+  text-wrap: pretty;
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  margin: 6px 0 0;
+  padding: 0;
+  border: 0;
+}
+
+/* One found book; the whole row is the radio's label, so all of it can be tapped. */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 82px;
+  padding: 10px 14px 10px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-surface);
+  cursor: pointer;
+}
+
+/* A second line of edge inside the first, so choosing a row does not move its contents. */
+.chosen {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+  box-shadow: inset 0 0 0 1px var(--color-primary);
+}
+
+.chosen .rowTitle {
+  font-weight: 700;
+}
+
+.row:has(:focus-visible) {
+  outline: 3px solid var(--color-coral);
+  outline-offset: 2px;
+}
+
+.radio {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  accent-color: var(--color-primary);
+  outline: none;
+  cursor: pointer;
+}
+
+.rowBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.rowTitle {
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.rowAuthor {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+/* Already in the library: there to be recognised, not to be picked. */
+.owned {
+  background: transparent;
+  cursor: default;
+}
+
+.owned .rowTitle {
+  color: var(--color-muted);
+}
+
+.owned > :first-child {
+  opacity: 0.6;
+}
+
+.rowOwned {
+  display: flex;
+  margin-top: 4px;
+}
+
+.skeleton {
+  cursor: default;
+}
+
+.skeletonCover,
+.skeletonLine {
+  border-radius: 4px;
+  background: var(--color-sunken);
+  animation: pulse 1.2s ease-in-out infinite alternate;
+}
+
+.skeletonCover {
+  flex: none;
+  width: 40px;
+  height: 60px;
+}
+
+.skeletonLine {
+  width: 70%;
+  height: 14px;
+  margin: 3px 0;
+}
+
+.skeletonShort {
+  width: 45%;
+  height: 11px;
+}
+
+@keyframes pulse {
+  to {
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeletonCover,
+  .skeletonLine {
+    animation: none;
+  }
+}
+
+.notice {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 6px;
+  padding: var(--space);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  font-size: 0.9375rem;
+}
+
+.noticeActions {
+  display: flex;
+  gap: 8px;
+}
+
+.manual {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9375rem;
+  color: var(--color-muted);
+}
+
+.manualLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-size);
+  padding-right: 8px;
+  color: var(--color-primary-dark);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+/* What floats over the list once a book is chosen: where it goes, and the button that adds it. */
+.dock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.places {
+  min-width: 0;
+  margin: 0;
+  padding: 10px 12px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-float);
+}
+
+/* Floated, or the browser would draw it across the fieldset's top edge. */
+.placesLegend {
+  float: left;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+/* Always one row: on a narrow phone the longest label breaks in two inside its pill instead. */
+.placeRow {
+  display: flex;
+  clear: both;
+  gap: 8px;
+}
+
+.place {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  cursor: pointer;
+}
+
+/* The input covers its label, unseen: a tap, the arrow keys and a screen reader all still reach it. */
+.place input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.place span {
+  display: grid;
+  flex: 1;
+  place-items: center;
+  min-height: var(--tap-size);
+  padding: 2px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.place input:checked + span {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+  box-shadow: inset 0 0 0 1px var(--color-primary);
+  color: var(--color-primary-dark);
+  font-weight: 700;
+}
+
+.place input:focus-visible + span {
+  outline: 3px solid var(--color-coral);
+  outline-offset: 2px;
+}

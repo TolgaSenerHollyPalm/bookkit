@@ -3,6 +3,8 @@ import type { Book } from '../books/types.ts'
 
 export interface AppData {
   books: Book[]
+  /** The address of each stored cover picture, by book id; a book without one shows the cover the app draws. */
+  covers: ReadonlyMap<string, string>
   /** Stores a book, adding it when it is new, and stamps it with the time. */
   saveBook: (book: Book) => void
   deleteBook: (bookId: string) => void
@@ -18,6 +20,6 @@ export function useAppData(): AppData {
 
 /** One book of the library by its id, with the ways to change it. */
 export function useBook(bookId: string) {
-  const { books, saveBook, deleteBook } = useAppData()
-  return { book: books.find((candidate) => candidate.id === bookId), books, saveBook, deleteBook }
+  const { books, covers, saveBook, deleteBook } = useAppData()
+  return { book: books.find((candidate) => candidate.id === bookId), cover: covers.get(bookId), books, saveBook, deleteBook }
 }

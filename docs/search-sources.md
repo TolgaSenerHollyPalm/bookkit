@@ -34,7 +34,20 @@ listesinde oran %100, yani **kural Open Library'yi tek kaynak yapıyor.**
 Kuralın görmediği: planın listesi klasiklerden oluşuyor. Yeni kitap okuyan biri için arama yarı yarıya boş döner
 (20'de 10), o haftanın çok satanlarını arayan için hiç sonuç vermez (15'te 0). Bu kitaplar elle eklenir.
 
-**Tolga'nın kararı:** bekliyor.
+**Tolga'nın kararı (30 Eylül 2026):** Google Books da eklenecek. Türkçe baskılar herkeste öne alınacak, cihaz diline
+bakılmayacak (uygulama yalnızca Türkçe).
+
+Google, kullanım koşullarının izin verdiği biçimde kullanılır:
+
+- Arama kutusu Open Library'ye sorar. Google'a yalnızca kullanıcı sonuçların altındaki "Google Books'ta ara"
+  düğmesine basınca sorulur. Planın otomatik koşulu (Open Library 5'ten az sonuç verince) Open Library'de olmayan
+  15 kitabın 4'ünde hiç çalışmazdı: "Bekle Beni", "Taş Kağıt Makas", "Soygun" ve "Muhabbet" aramaları 5 ve daha çok
+  alakasız satır döndürüyor. Düğme ortak günlük kotayı da korur.
+- Google sonuçları ayrı bir bölümdür: Google'ın sırası ve yazımıyla, "powered by Google" logosuyla, her satırda
+  Google Books sayfasına bağlantıyla. Open Library sonuçlarıyla birleştirilmez.
+- Google'dan eklenen kitabın kapağı saklanamaz; internet varken gösterilir, yokken uygulamanın çizdiği kapak kalır.
+- Anahtar `VITE_GOOGLE_BOOKS_KEY` ile verilir (yerelde `.env.local`, yayında GitHub Actions değişkeni). Anahtar yoksa
+  düğme hiç görünmez.
 
 ## Open Library
 
