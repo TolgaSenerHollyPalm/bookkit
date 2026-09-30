@@ -7,7 +7,7 @@ import OnlineBadge from 'kitshelf-ui/ui/OnlineBadge.tsx'
 import Screen from 'kitshelf-ui/ui/Screen.tsx'
 import text from 'kitshelf-ui/ui/text.module.css'
 import { useId } from 'react'
-import { useAppData } from '../app/appData.ts'
+import { coverOf, useAppData } from '../app/appData.ts'
 import { href, navigate } from '../app/router.ts'
 import { today } from '../books/dates.ts'
 import { booksOfTab, finishedThisYear, initialTab, latestNote, tabCounts, type Tab } from '../books/library.ts'
@@ -76,7 +76,7 @@ export default function HomeScreen({ tab }: { tab?: Tab }) {
             panelId={panelId}
           />
           <div id={panelId} className={styles.books} role="tabpanel" aria-label={TAB_LABELS[selected]}>
-            {shown.length === 0 ? <p className={styles.empty}>{EMPTY_TAB[selected]}</p> : shown.map((book) => <BookCard key={book.id} book={book} cover={covers.get(book.id)} today={now} />)}
+            {shown.length === 0 ? <p className={styles.empty}>{EMPTY_TAB[selected]}</p> : shown.map((book) => <BookCard key={book.id} book={book} cover={coverOf(covers, book)} today={now} />)}
           </div>
 
           {last && (

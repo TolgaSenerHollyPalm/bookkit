@@ -1,9 +1,10 @@
 import { createContext, useContext } from 'react'
 import type { Book } from '../books/types.ts'
+import { onlineCover } from '../covers/download.ts'
 
 export interface AppData {
   books: Book[]
-  /** The address of each stored cover picture, by book id; a book without one shows the cover the app draws. */
+  /** The address of each stored cover picture, by book id; `coverOf` is what a screen shows. */
   covers: ReadonlyMap<string, string>
   /** Stores a book, adding it when it is new, and stamps it with the time. */
   saveBook: (book: Book) => void
@@ -18,8 +19,12 @@ export function useAppData(): AppData {
   return data
 }
 
+/** The picture to show for a book: its stored cover, or one its source only lets be shown; without either the app draws one. */
+export const coverOf = (covers: AppData['covers'], book: Book): string | undefined => covers.get(book.id) ?? onlineCover(book)
+
 /** One book of the library by its id, with the ways to change it. */
 export function useBook(bookId: string) {
   const { books, covers, saveBook, deleteBook } = useAppData()
-  return { book: books.find((candidate) => candidate.id === bookId), cover: covers.get(bookId), books, saveBook, deleteBook }
+  const book = books.find((candidate) => candidate.id === bookId)
+  return { book, cover: book && coverOf(covers, book), books, saveBook, deleteBook }
 }

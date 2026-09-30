@@ -1,7 +1,8 @@
 // node scripts/compare-sources.mjs [isbn …] — asks the book sources for the books BookKit's users are likely to
 // add, and prints what came back as the Markdown tables of docs/search-sources.md. Run by hand; not part of the app.
-// GOOGLE_BOOKS_KEY=… asks Google Books through its API; without a key the API refuses, and its old keyless feed
-// is asked instead, which shows what the catalogue holds but not how the API would rank it.
+// GOOGLE_BOOKS_KEY=… asks Google Books through its API (GOOGLE_BOOKS_PARAMS adds to its query, e.g. langRestrict=tr);
+// without a key the API refuses, and its old keyless feed is asked instead, which shows what the catalogue holds
+// but not how the API would rank it.
 import { parseIsbn } from '../src/books/isbn.ts'
 import { matchKey } from '../src/books/match.ts'
 import { readAnswer, searchAddress } from '../src/search/openLibrary.ts'
@@ -116,8 +117,10 @@ const unescape = (text) => text.replaceAll('&amp;', '&').replace(/&#?0?39;/g, "'
 // Google Books as a list of { title, authors, language, cover }: the v1 API with a key, the old Atom feed without.
 async function googleBooks(query, key) {
   if (key) {
-    const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=20&printType=books&key=${key}`, { signal: AbortSignal.timeout(20_000) })
-    if (!response.ok) return { status: response.status, reason: (await response.json().catch(() => ({}))).error?.message, docs: [] }
+    const extra = process.env.GOOGLE_BOOKS_PARAMS ? `&${process.env.GOOGLE_BOOKS_PARAMS}` : ''
+    // The key only answers requests that come from the app's own addresses, which a script has to name itself.
+    const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=20&printType=books${extra}&key=${key}`, { headers: { Referer: 'http://localhost:5175/' }, signal: AbortSignal.timeout(20_000) })
+    if (!response.ok) return { status: response.status, reason: (await response.json().catch(() => ({}))).error?.message?.replaceAll(key, '<key>'), docs: [] }
     const items = (await response.json()).items ?? []
     return { status: 200, docs: items.map(({ volumeInfo: info = {} }) => ({ title: info.title ?? '', authors: info.authors ?? [], language: info.language, cover: Boolean(info.imageLinks?.thumbnail) })) }
   }
@@ -132,94 +135,100 @@ async function googleBooks(query, key) {
   return { status: 200, docs: entries }
 }
 
-console.error('Open Library…')
-const rows = []
-const plainRows = []
-let inFive = 0
-let exact = 0
-let covered = 0
-for (const book of BOOKS) {
-  const result = await openLibrary(book.q)
-  const raw = rawAt(result.docs, book)
-  const at = shownAt(result.shown, book)
-  const hit = result.shown[at]
-  if (at >= 0 && at < 5) inFive += 1
-  if (hit?.title === book.q) exact += 1
-  if (hit?.coverUrl) covered += 1
-  rows.push(
-    `| ${book.q} | ${place(raw)} | ${place(at)} | ${rawTitle(result.docs[raw]) ?? '—'} | ${hit?.title ?? '—'} | ${hit?.authors.join(', ') || '—'} | ${hit ? yes(hit.turkish) : '—'} | ${hit ? await coverSize(hit.coverUrl) : '—'} | ${hit ? (hit.isbn ?? 'yok') : '—'} | ${result.docs.length} → ${result.shown.length} | ${result.ms} ms |`,
-  )
-  await sleep(1100)
-  // The same words without the Turkish letters, as typed on a keyboard that lacks them.
-  const plain = matchKey(book.q)
-  if (plain !== book.q.toLocaleLowerCase('tr')) {
-    const plainResult = await openLibrary(plain)
-    const plainHit = plainResult.shown[shownAt(plainResult.shown, book)]
-    plainRows.push(`| ${plain} | ${place(shownAt(plainResult.shown, book))} | ${plainHit?.title ?? '—'} | ${plainHit?.authors.join(', ') || '—'} |`)
+// ONLY=google skips Open Library, e.g. to try Google's parameters without asking Open Library again.
+if (process.env.ONLY !== 'google') await openLibraryTables()
+
+async function openLibraryTables() {
+  console.error('Open Library…')
+  const rows = []
+  const plainRows = []
+  let inFive = 0
+  let exact = 0
+  let covered = 0
+  for (const book of BOOKS) {
+    const result = await openLibrary(book.q)
+    const raw = rawAt(result.docs, book)
+    const at = shownAt(result.shown, book)
+    const hit = result.shown[at]
+    if (at >= 0 && at < 5) inFive += 1
+    if (hit?.title === book.q) exact += 1
+    if (hit?.coverUrl) covered += 1
+    rows.push(
+      `| ${book.q} | ${place(raw)} | ${place(at)} | ${rawTitle(result.docs[raw]) ?? '—'} | ${hit?.title ?? '—'} | ${hit?.authors.join(', ') || '—'} | ${hit ? yes(hit.turkish) : '—'} | ${hit ? await coverSize(hit.coverUrl) : '—'} | ${hit ? (hit.isbn ?? 'yok') : '—'} | ${result.docs.length} → ${result.shown.length} | ${result.ms} ms |`,
+    )
+    await sleep(1100)
+    // The same words without the Turkish letters, as typed on a keyboard that lacks them.
+    const plain = matchKey(book.q)
+    if (plain !== book.q.toLocaleLowerCase('tr')) {
+      const plainResult = await openLibrary(plain)
+      const plainHit = plainResult.shown[shownAt(plainResult.shown, book)]
+      plainRows.push(`| ${plain} | ${place(shownAt(plainResult.shown, book))} | ${plainHit?.title ?? '—'} | ${plainHit?.authors.join(', ') || '—'} |`)
+      await sleep(1100)
+    }
+  }
+  console.log('### Open Library: kitap adıyla\n')
+  console.log('| Yazılan | Ham sırası | Uygulamadaki sırası | Kayıttaki ad | Uygulamada görünen ad | Görünen yazar | Türkçe baskı | Kapak (M) | ISBN | Kayıt → satır | Süre |')
+  console.log('| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |')
+  console.log(rows.join('\n'))
+  console.log(`\nDoğru kitap ilk 5’te: ${inFive} / ${BOOKS.length} (%${Math.round((inFive / BOOKS.length) * 100)}). Adı harfi harfine doğru görünen: ${exact} / ${BOOKS.length}. Kapağı olan: ${covered} / ${BOOKS.length}.\n`)
+
+  console.log('### Open Library: aynı kitaplar, Türkçe harfler olmadan yazılınca\n')
+  console.log('| Yazılan | Uygulamadaki sırası | Uygulamada görünen ad | Görünen yazar |')
+  console.log('| --- | --- | --- | --- |')
+  console.log(plainRows.join('\n'))
+
+  console.log('\n### Open Library: yalnızca yazar adıyla\n')
+  console.log('| Yazılan | İlk 5’in kaçı o yazarın | İlk 5 satır | Kapaklı | Türkçe |')
+  console.log('| --- | --- | --- | --- | --- |')
+  for (const author of AUTHORS) {
+    const shown = (await openLibrary(author.q)).shown.slice(0, 5)
+    console.log(`| ${author.q} | ${shown.filter((found) => byAuthor(found.authors, author.author)).length} / ${shown.length} | ${shown.map((found) => found.title).join('; ')} | ${shown.filter((found) => found.coverUrl).length} | ${shown.filter((found) => found.turkish).length} |`)
     await sleep(1100)
   }
-}
-console.log('### Open Library: kitap adıyla\n')
-console.log('| Yazılan | Ham sırası | Uygulamadaki sırası | Kayıttaki ad | Uygulamada görünen ad | Görünen yazar | Türkçe baskı | Kapak (M) | ISBN | Kayıt → satır | Süre |')
-console.log('| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |')
-console.log(rows.join('\n'))
-console.log(`\nDoğru kitap ilk 5’te: ${inFive} / ${BOOKS.length} (%${Math.round((inFive / BOOKS.length) * 100)}). Adı harfi harfine doğru görünen: ${exact} / ${BOOKS.length}. Kapağı olan: ${covered} / ${BOOKS.length}.\n`)
 
-console.log('### Open Library: aynı kitaplar, Türkçe harfler olmadan yazılınca\n')
-console.log('| Yazılan | Uygulamadaki sırası | Uygulamada görünen ad | Görünen yazar |')
-console.log('| --- | --- | --- | --- |')
-console.log(plainRows.join('\n'))
-
-console.log('\n### Open Library: yalnızca yazar adıyla\n')
-console.log('| Yazılan | İlk 5’in kaçı o yazarın | İlk 5 satır | Kapaklı | Türkçe |')
-console.log('| --- | --- | --- | --- | --- |')
-for (const author of AUTHORS) {
-  const shown = (await openLibrary(author.q)).shown.slice(0, 5)
-  console.log(`| ${author.q} | ${shown.filter((found) => byAuthor(found.authors, author.author)).length} / ${shown.length} | ${shown.map((found) => found.title).join('; ')} | ${shown.filter((found) => found.coverUrl).length} | ${shown.filter((found) => found.turkish).length} |`)
-  await sleep(1100)
-}
-
-for (const [heading, books] of [
-  ['Open Library: son bir yılın çok satan edebiyat kitapları', LITERATURE],
-  ['Open Library: bu haftanın çok satanları', THIS_WEEK],
-]) {
-  console.log(`\n### ${heading}\n`)
-  console.log('| Kitap | Adıyla arayınca | Uygulamada görünen | Kapak | Satıştaki baskının ISBN’i | ISBN ile arayınca |')
-  console.log('| --- | --- | --- | --- | --- | --- |')
-  let byName = 0
-  let byIsbn = 0
-  for (const book of books) {
-    const named = (await openLibrary(book.q)).shown
-    const at = shownByAuthorAt(named, book)
-    const hit = named[at]
-    await sleep(1100)
-    const numbered = (await openLibrary(book.isbn)).shown[0]
-    await sleep(1100)
-    if (at >= 0 && at < 5) byName += 1
-    if (numbered && rightBook(numbered, book)) byIsbn += 1
-    console.log(`| ${book.q} | ${place(at)} | ${hit ? `${hit.title} — ${hit.authors.join(', ')}` : '—'} | ${hit ? yes(hit.coverUrl) : '—'} | ${book.isbn} | ${isbnCell(numbered, book)} |`)
+  for (const [heading, books] of [
+    ['Open Library: son bir yılın çok satan edebiyat kitapları', LITERATURE],
+    ['Open Library: bu haftanın çok satanları', THIS_WEEK],
+  ]) {
+    console.log(`\n### ${heading}\n`)
+    console.log('| Kitap | Adıyla arayınca | Uygulamada görünen | Kapak | Satıştaki baskının ISBN’i | ISBN ile arayınca |')
+    console.log('| --- | --- | --- | --- | --- | --- |')
+    let byName = 0
+    let byIsbn = 0
+    for (const book of books) {
+      const named = (await openLibrary(book.q)).shown
+      const at = shownByAuthorAt(named, book)
+      const hit = named[at]
+      await sleep(1100)
+      const numbered = (await openLibrary(book.isbn)).shown[0]
+      await sleep(1100)
+      if (at >= 0 && at < 5) byName += 1
+      if (numbered && rightBook(numbered, book)) byIsbn += 1
+      console.log(`| ${book.q} | ${place(at)} | ${hit ? `${hit.title} — ${hit.authors.join(', ')}` : '—'} | ${hit ? yes(hit.coverUrl) : '—'} | ${book.isbn} | ${isbnCell(numbered, book)} |`)
+    }
+    console.log(`\nAdıyla ilk 5’te: ${byName} / ${books.length}. ISBN ile doğru adla bulunan: ${byIsbn} / ${books.length}.`)
   }
-  console.log(`\nAdıyla ilk 5’te: ${byName} / ${books.length}. ISBN ile doğru adla bulunan: ${byIsbn} / ${books.length}.`)
-}
 
-console.log('\n### Open Library: planın 16 kitabı, satıştaki baskının ISBN’i ile\n')
-await isbnTable(BOOKS.map((book) => book.isbn), BOOKS.map((book) => book.q))
-const isbns = process.argv.slice(2)
-console.log('\n### Open Library: verilen ISBN’ler\n')
-if (isbns.length === 0) console.log('ISBN verilmedi: `node scripts/compare-sources.mjs 9789750800023 …`')
-else await isbnTable(isbns)
+  console.log('\n### Open Library: planın 16 kitabı, satıştaki baskının ISBN’i ile\n')
+  await isbnTable(BOOKS.map((book) => book.isbn), BOOKS.map((book) => book.q))
+  const isbns = process.argv.slice(2)
+  console.log('\n### Open Library: verilen ISBN’ler\n')
+  if (isbns.length === 0) console.log('ISBN verilmedi: `node scripts/compare-sources.mjs 9789750800023 …`')
+  else await isbnTable(isbns)
 
-async function isbnTable(isbns, names = []) {
-  console.log('| Kitap | ISBN | Geçerli mi | Bulundu mu | Uygulamada görünen ad | Görünen yazar | Kapak (M) |')
-  console.log('| --- | --- | --- | --- | --- | --- | --- |')
-  let known = 0
-  for (const [index, typed] of isbns.entries()) {
-    const found = parseIsbn(typed) ? (await openLibrary(typed)).shown[0] : undefined
-    if (found) known += 1
-    console.log(`| ${names[index] ?? '?'} | ${typed} | ${yes(parseIsbn(typed))} | ${yes(found)} | ${found?.title ?? '—'} | ${found?.authors.join(', ') || '—'} | ${found ? await coverSize(found.coverUrl) : '—'} |`)
-    await sleep(1100)
+  async function isbnTable(isbns, names = []) {
+    console.log('| Kitap | ISBN | Geçerli mi | Bulundu mu | Uygulamada görünen ad | Görünen yazar | Kapak (M) |')
+    console.log('| --- | --- | --- | --- | --- | --- | --- |')
+    let known = 0
+    for (const [index, typed] of isbns.entries()) {
+      const found = parseIsbn(typed) ? (await openLibrary(typed)).shown[0] : undefined
+      if (found) known += 1
+      console.log(`| ${names[index] ?? '?'} | ${typed} | ${yes(parseIsbn(typed))} | ${yes(found)} | ${found?.title ?? '—'} | ${found?.authors.join(', ') || '—'} | ${found ? await coverSize(found.coverUrl) : '—'} |`)
+      await sleep(1100)
+    }
+    console.log(`\nBulunan: ${known} / ${isbns.length}`)
   }
-  console.log(`\nBulunan: ${known} / ${isbns.length}`)
+
 }
 
 const key = process.env.GOOGLE_BOOKS_KEY

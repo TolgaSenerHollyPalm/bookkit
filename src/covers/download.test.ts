@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { book } from '../books/test-helpers.ts'
 import { coverAddress } from '../search/openLibrary.ts'
-import { downloadCover, isCoverAddress, TIMEOUT_MS, wantingCover, type Fetcher } from './download.ts'
+import { downloadCover, isCoverAddress, onlineCover, TIMEOUT_MS, wantingCover, type Fetcher } from './download.ts'
 
 const URL_1 = coverAddress(12354821)
 const picture = (size: number, type = 'image/jpeg', status = 200) => new Response(new Uint8Array(size), { status, headers: { 'content-type': type } })
@@ -64,5 +64,25 @@ describe('wantingCover', () => {
   it('leaves out the ones already asked for in vain', () => {
     expect(wantingCover(books, new Set(), new Set(['c'])).map(({ id }) => id)).toEqual(['a'])
     expect(wantingCover(books, new Set(['a']), new Set(['c']))).toEqual([])
+  })
+})
+
+describe('onlineCover', () => {
+  const google = 'https://books.google.com/books/content?id=d3klBgAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api'
+
+  it('is the address of a cover that can be shown but not kept', () => {
+    expect(onlineCover({ coverUrl: google })).toBe(google)
+  })
+
+  it('is nothing for a cover that is downloaded instead, for another site’s, or for none', () => {
+    expect(onlineCover({ coverUrl: URL_1 })).toBeUndefined()
+    expect(onlineCover({ coverUrl: google.replace('https:', 'http:') })).toBeUndefined()
+    expect(onlineCover({ coverUrl: 'https://example.com/books/content?id=1' })).toBeUndefined()
+    expect(onlineCover({})).toBeUndefined()
+  })
+
+  it('is never fetched for storing', () => {
+    expect(isCoverAddress(google)).toBe(false)
+    expect(wantingCover([book({ id: 'g', coverUrl: google })], new Set(), new Set())).toEqual([])
   })
 })

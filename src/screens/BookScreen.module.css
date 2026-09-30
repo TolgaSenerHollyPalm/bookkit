@@ -15,6 +15,16 @@
   font-size: 0.8125rem;
 }
 
+.source {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-size);
+  margin-top: -8px;
+  color: var(--color-primary-dark);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
 .actions {
   display: grid;
   grid-auto-columns: minmax(0, 1fr);

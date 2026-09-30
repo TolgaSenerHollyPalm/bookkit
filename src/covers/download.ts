@@ -23,6 +23,19 @@ export function isCoverAddress(url: string): boolean {
   }
 }
 
+// Google sends its covers without a CORS header: a page may show them, but cannot read them to keep a copy.
+const SHOWN_ONLY_HOSTS = ['books.google.com']
+
+/** The address of a cover that can only be shown straight from its source, while there is a connection. */
+export function onlineCover(book: Pick<Book, 'coverUrl'>): string | undefined {
+  try {
+    const address = new URL(book.coverUrl ?? '')
+    return address.protocol === 'https:' && SHOWN_ONLY_HOSTS.includes(address.hostname) ? address.href : undefined
+  } catch {
+    return undefined
+  }
+}
+
 export async function downloadCover(url: string, fetcher: Fetcher = fetch): Promise<CoverAnswer> {
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS)

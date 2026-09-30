@@ -5,26 +5,27 @@ temizleme kodunu (`src/search/`) kullanır; "uygulamada görünen" sütunları k
 
 ## Özet
 
-| Liste | Open Library: adıyla ilk 5’te | Open Library: ISBN ile | Google Books: adıyla ilk 5’te | Google Books: ISBN ile | Google Books: kapağı olan |
-| --- | --- | --- | --- | --- | --- |
-| Planın 16 kitabı (klasikler) | 16 / 16 | 10 / 16 | 13 / 16 | 11 / 16 | 12 / 16 |
-| Son bir yılın çok satan 20 edebiyat kitabı | 10 / 20 | 8 / 20 | 10 / 20 | 15 / 20 | 5 / 20 |
-| Bu haftanın 15 çok satanı | 0 / 15 | 0 / 15 | 2 / 15 | 2 / 15 | 0 / 15 |
+| Liste | Open Library: adıyla ilk 5’te | Open Library: ISBN ile | Google Books: adıyla ilk 5’te | Google Books: ISBN ile | Google Books: kapağı olan | İkisi birlikte: adıyla ilk 5’te |
+| --- | --- | --- | --- | --- | --- | --- |
+| Planın 16 kitabı (klasikler) | 16 / 16 | 10 / 16 | 12 / 16 | 11 / 16 | 13 / 16 | 16 / 16 |
+| Son bir yılın çok satan 20 edebiyat kitabı | 10 / 20 | 8 / 20 | 11 / 20 | 14 / 20 | 5 / 20 | 15 / 20 |
+| Bu haftanın 15 çok satanı | 0 / 15 | 0 / 15 | 2 / 15 | 1 / 15 | 0 / 15 | 2 / 15 |
 
 - **Open Library klasiklerde iyi, yeni kitaplarda zayıf.** Planın 16 kitabının hepsi ilk satırda ve adı harfi harfine
   doğru geliyor. Son bir-iki yılda çıkan kitapların çoğu ise katalogda yok: Zülfü Livaneli'nin "Bekle Beni"si,
   Ahmet Ümit'in "Roma’nın Beş Günü", Dan Brown'ın "Sırların Sırrı" ne adıyla ne ISBN'iyle bulunuyor.
 - **ISBN ile arama, satıştaki baskıyı çoğu zaman bulmuyor.** Klasiklerin bile yeni baskıları eksik (Kapra'nın "Kürk
   Mantolu Madonna"sı, Dergâh'ın yeni "Saatleri Ayarlama Enstitüsü" ISBN'i).
-- **Google Books yeni edebiyat kitaplarında daha çok kayıt tutuyor, ama üç engeli var:** anahtarsız çalışmıyor;
+- **Google Books yeni edebiyat kitaplarında Open Library'yi tamamlıyor:** ikisi birlikte 20 kitabın 15'ini buluyor
+  (Open Library tek başına 10). Bu haftanın çok satanlarında o da zayıf. Üç kısıtı var: anahtarsız çalışmıyor;
   kapakları indirilip saklanamıyor; kullanım koşulları sonuçların sırasını ve içeriğini değiştirmeyi yasaklıyor
-  (aşağıda). Bu haftanın çok satanlarında o da zayıf.
+  (aşağıda).
 - **Bulunamayan kitap elle eklenir.** "Elle ekle" formu aramaya yazılan metinle (ISBN yazıldıysa ISBN'le) dolu açılır;
   kapak yerine uygulamanın çizdiği kapak görünür.
 
-ISBN sütunları kitabı doğru adla bulanları sayar. Google Books sütunları anahtar istemeyen eski beslemeden ölçüldü
-(`google.com/books/feeds/volumes`). Kataloğunda ne olduğunu gösterir; asıl API'nin sıralaması farklı olabilir ve
-besleme aynı sorguya farklı zamanlarda farklı sıra verebiliyor.
+ISBN sütunları kitabı doğru adla bulanları sayar. Google Books sütunları API'den, anahtarla ölçüldü
+(`ONLY=google GOOGLE_BOOKS_KEY=… node scripts/compare-sources.mjs`). Google aynı soruya farklı zamanlarda farklı sıra
+verebiliyor; sayılar bir-iki kitap oynayabilir.
 
 ## Karar
 
@@ -261,15 +262,32 @@ Adıyla ilk 5’te: 0 / 15. ISBN ile doğru adla bulunan: 0 / 15.
 
 ## Google Books
 
+### İstek
+
+```
+https://www.googleapis.com/books/v1/volumes?q=<metin>&maxResults=20&printType=books
+&fields=items(id,volumeInfo(title,authors,industryIdentifiers,imageLinks/thumbnail,language))&key=<anahtar>
+```
+
+ISBN yazılınca `q=isbn:<13 hane>`. Kitabın Google Books sayfası: `https://books.google.com/books?id=<id>`.
+
 ### Ölçülen davranış
 
 | Ne | Sonuç |
 | --- | --- |
 | API'ye anahtarsız istek | HTTP 429, "Quota exceeded … Queries per day": anahtarsız istekler ortak bir kotadan düşüyor ve o kota dolu. Anahtar şart |
-| API yanıtı tarayıcıdan | Okunuyor (CORS açık) |
+| Adres kısıtlı anahtar | İzinli adresten (`http://localhost:5175/`, `https://book.kitshelf.app/`) 200; adressiz ya da başka siteden 403 "Requests from referer … are blocked". Node betiği de `Referer` başlığını gönderince çalışıyor, ayrı bir anahtar gerekmiyor |
+| API yanıtı tarayıcıdan | Okunuyor (CORS açık); 0,5–1,6 sn |
+| Sonuç yokken | `{}` (içinde `items` yok) |
+| Aynı soruya sıra | Değişebiliyor: "bekle beni" için ilk üç satır aynı kaldı, sonrakiler iki istek arasında değişti |
+| `langRestrict=tr` | Fark yaratmıyor (adıyla ilk 5'te 13 / 16, 11 / 20, 2 / 15); kullanılmıyor, böylece başka dildeki kitap da bulunabiliyor |
 | Kapak `fetch` (`books.google.com/books/content?…`) | **Başarısız**: CORS başlığı yok. `no-cors` ile gelen yanıtın içeriği okunamıyor |
 | Kapak `<img>` olarak | Yükleniyor, 128×198 px |
-| Sonuç | Google kapağı indirilip `covers` deposuna yazılamaz (plan 6.4 uygulanamaz); yalnızca internet varken gösterilebilir |
+| Kitabın bağlantıları | API'nin verdiği `infoLink`, satışta olan kitaplarda Play Store'a gidiyor; uygulama Google Books sayfasını kitabın kimliğinden kuruyor |
+| Kayıtların hâli | Open Library'ye benziyor: tamamı büyük harf ("BEKLE BENİ — CEM ALCAN"), cümle düzeni ("Bekle beni"), Türkçe harfleri düşmüş adlar ("Gece Yarisi Kütüphanesi", "Sermin Yasar"), bozuk kaçış ("Maggie O&039;Farrell"), başka kitabın adını taşıyan kayıt ("Taş Kağıt Makas"ın ISBN'i "Nasıl Flört Edilmez" diye çıkıyor). Yazarın Türkçe yazımı burada var: "Fyodor Dostoyevski" |
+
+Sonuç: Google kapağı indirilip `covers` deposuna yazılamaz (plan 6.4 onlar için uygulanamaz); yalnızca internet
+varken gösterilir.
 
 ### Kullanım koşulları
 
@@ -278,26 +296,26 @@ Adıyla ilk 5’te: 0 / 15. ISBN ile doğru adla bulunan: 0 / 15.
 - "The 'powered by Google' graphic must always be displayed alongside any search modules or results."
 - "You must maintain prominent links to Google Books pages and features."
 - "You may not reorder or otherwise alter the results returned by the Google Books API Family."
+- Örnek uygulama için: "Google Search Results are not intermixed with third-party results."
 
-Yani sonuçların yanında Google logosu ve her kitapta Google Books'a bağlantı gerekiyor. Planın 6.2 bölümündeki yol
-(iki kaynağı birleştir, tekilleştir, kapaklı sonucu öne al) üçüncü maddeye uymuyor: Google kullanılırsa sonuçları
-ayrı, sırası ve yazımı değiştirilmemiş bir liste olarak gösterilmek zorunda.
+Planın 6.2 bölümündeki yol (iki kaynağı birleştir, tekilleştir, kapaklı sonucu öne al) bunlara uymuyor. Uygulama bu
+yüzden Google'ın sonuçlarını ayrı bir bölümde, Google'ın sırası ve yazımıyla, logosuyla ve her satırda Google Books
+bağlantısıyla gösteriyor. Google'dan eklenen kitabın sayfasında da "Google Books’ta gör" bağlantısı var.
+
+[developers.google.com/books/terms](https://developers.google.com/books/terms): "You may not charge users any fee for
+the use of your application" (BookKit ücretsiz).
+
+[developers.google.com/terms](https://developers.google.com/terms), 5.e: API'den gelen içerik için "create permanent
+copies of such content" ve "modify" yasak, "unless expressly permitted by the content owner or by applicable law".
+Uygulamanın yaptığı: kullanıcı bir Google sonucunu kitaplığına eklerse kitabın adını, yazarını, ISBN'ini ve Google
+kimliğini cihazda saklar ve adın yazımını kitaplığın öteki kitapları gibi düzeltir ("BEKLE BENİ" → "Bekle Beni").
+Bunlar kitabın künye bilgisi; kapak resmi saklanmaz. Koşulların bu maddesinin bir okurun kendi kitap kaydını kapsayıp
+kapsamadığı bir hukuk sorusu; burada yalnızca not ediliyor.
 
 Ayrıca: sonuçlar isteği yapanın IP adresine (ülkesine) göre kısıtlanıyor; günlük kota bir proje için ortak, yani bütün
-kullanıcılar aynı kotadan yer.
+kullanıcılar aynı kotadan yer. Kota dolunca API 429 döner, ücret çıkmaz; projeye fatura hesabı bağlı değil.
 
-### Kataloğu
-
-API’ye anahtarsız istek: HTTP 429 — Quota exceeded for quota metric 'Queries' and limit 'Queries per day' of service 'books.googleapis.com' for consumer 'project_number:624717413613'.
-
-Aşağıdaki tablolar anahtar istemeyen eski beslemeden (`google.com/books/feeds/volumes`): kataloğunda ne olduğunu gösterir, API’nin sıralamasını değil.
-
-Kayıtların hâli Open Library'ye benziyor: cümle düzeni ("Benim adım kırmızı", "Bekle beni"), Türkçe harfleri düşmüş
-adlar ("Gece Yarisi Kütüphanesi", "Sermin Yasar"), başka kitabın adını taşıyan kayıt ("Taş Kağıt Makas"ın ISBN'i
-"Nasıl Flört Edilmez" diye çıkıyor), İsveçli bir kitapçıdan gelen kayıtlar ("Red Sparrow (Turkiska)" = "Kınalı
-Serçe"). Yazarın Türkçe yazımı ise burada var: "Fyodor Dostoyevski".
-
-#### Planın 16 kitabı
+### Planın 16 kitabı
 
 | Kitap | Adıyla arayınca | Kayıttaki ad ve yazar | Kapak | ISBN ile arayınca |
 | --- | --- | --- | --- | --- |
@@ -306,21 +324,21 @@ Serçe"). Yazarın Türkçe yazımı ise burada var: "Fyodor Dostoyevski".
 | Saatleri Ayarlama Enstitüsü | 1. | Saatleri Ayarlama Enstitüsü — Ahmet Hamdi Tanpınar | evet | yok |
 | Tutunamayanlar | 1. | Tutunamayanlar — Oğuz Atay | evet | Tutunamayanlar — Oğuz Atay |
 | Tehlikeli Oyunlar | 1. | Tehlikeli oyunlar — Oğuz Atay | evet | Tehlikeli oyunlar — Oğuz Atay |
-| İnce Memed | 6. | İnce Memed — Yaşar Kemal | hayır | yok |
+| İnce Memed | 18. | İnce Memed — Yaşar Kemal | hayır | yok |
 | Çalıkuşu | 1. | Çalıkuşu — Reşat Nuri Güntekin, Necati Cumalı | evet | Calikusu — Resat Nuri Güntekin |
-| Aşk-ı Memnu | 1. | Aşk-ı Memnu — Halid Ziya Uşaklıgil | hayır | Ask-i Memnu — Halit Ziya Uşaklıgil |
+| Aşk-ı Memnu | 1. | Aşk-ı memnu — Halit Ziya Uşaklıgil | evet | Ask-i Memnu — Halit Ziya Uşaklıgil |
 | Yaban | 1. | Yaban — Yakup Kadri Karaosmanoğlu | evet | yok |
 | Benim Adım Kırmızı | 1. | Benim adım kırmızı — Orhan Pamuk | evet | Benim Adim Kirmizi — Orhan Pamuk |
 | Masumiyet Müzesi | 1. | Masumiyet müzesi — Orhan Pamuk | hayır | Masumiyet müzesi — Orhan Pamuk |
 | Serenad | yok | — | — | Serenad — Zülfü Livaneli |
-| Suç ve Ceza | 1. | Suç ve Ceza — Fyodor Dostoyevski | evet | Suç ve ceza — Fyodor Mihaylovic Dostoyevski, Fyodor Dostoyevsky |
-| Simyacı | 1. | Simyacı — Paulo Coelho | evet | Simyaci — Paulo Coelho |
+| Suç ve Ceza | 1. | Suç ve Ceza — Fyodor Dostoyevski  | evet | Suç ve ceza — Fyodor Mihaylovic Dostoyevski, Fyodor Dostoyevsky |
+| Simyacı | yok | — | — | Simyaci — Paulo Coelho |
 | Sapiens | 2. | Hayvanlardan Tanrılara — Yuval N. Harari | evet | Hayvanlardan Tanrılara — Yuval N. Harari |
 | Beyaz Diş | 7. | Beyaz Diş — Jack London | hayır | yok |
 
-Adıyla ilk 5’te: 13 / 16. ISBN ile doğru adla bulunan: 11 / 16. Kapağı olan: 12 / 16.
+Adıyla ilk 5’te: 12 / 16. ISBN ile doğru adla bulunan: 11 / 16. Kapağı olan: 13 / 16.
 
-#### Son bir yılın çok satan edebiyat kitapları
+### Son bir yılın çok satan edebiyat kitapları
 
 | Kitap | Adıyla arayınca | Kayıttaki ad ve yazar | Kapak | ISBN ile arayınca |
 | --- | --- | --- | --- | --- |
@@ -329,11 +347,11 @@ Adıyla ilk 5’te: 13 / 16. ISBN ile doğru adla bulunan: 11 / 16. Kapağı ola
 | Altı Harfli Bir Tatlı | 4. | Altı harfli bir tatlı — Şermin Yaşar | hayır | Altı harfli bir tatlı — Şermin Yaşar |
 | Algernon’a Çiçekler | 1. | Algernon'a çiçekler — Daniel Keyes, N. Ekrem Düzen | hayır | Algernona Cicekler — Daniel Keyes |
 | Annemin Uyurgezer Geceleri | 4. | Annemin uyurgezer geceleri — Ayfer Tunç | hayır | Annemin uyurgezer geceleri — Ayfer Tunç |
-| Yaşamak | yok | — | — | Yasamak — Yu Hua |
+| Yaşamak | 20. | Yasamak — Yu Hua | hayır | Yasamak — Yu Hua |
 | Taş Kağıt Makas | yok | — | — | adı farklı: Nasıl Flört Edilmez — Alice Feeney, Denise Williams |
-| Gece Yarısı Kütüphanesi | 6. | Gece Yarisi Kütüphanesi — Matt Haig | hayır | Gece Yarisi Kütüphanesi — Matt Haig |
-| Hamnet | 2. | Hamnet — Maggie O'Farrell | evet | Hamnet — Maggie O'Farrell |
-| Söyleme Bilmesinler | 12. | Söyleme Bilmesinler — Sermin Yasar | hayır | Söyleme Bilmesinler — Sermin Yasar |
+| Gece Yarısı Kütüphanesi | 5. | Gece Yarisi Kütüphanesi — Matt Haig | hayır | yok |
+| Hamnet | 2. | Hamnet — Maggie O'Farrell | evet | Hamnet — Maggie O&039;Farrell |
+| Söyleme Bilmesinler | 13. | Söyleme Bilmesinler — Sermin Yasar | hayır | Söyleme Bilmesinler — Sermin Yasar |
 | Soygun | yok | — | — | Soygun — İskender Pala |
 | Saç Örgüsü | yok | — | — | Sac Örgüsü — Laetitia Colombani |
 | Saatleri Ayarlama Enstitüsü | 1. | Saatleri Ayarlama Enstitüsü — Ahmet Hamdi Tanpınar | evet | yok |
@@ -345,16 +363,18 @@ Adıyla ilk 5’te: 13 / 16. ISBN ile doğru adla bulunan: 11 / 16. Kapağı ola
 | Sırların Sırrı | 3. | Sırların Sırrı — Dan Brown | evet | Sırların Sırrı — Dan Brown |
 | Gece Yarısı Treni | yok | — | — | yok |
 
-Adıyla ilk 5’te: 10 / 20. ISBN ile doğru adla bulunan: 15 / 20. Kapağı olan: 5 / 20.
+Adıyla ilk 5’te: 11 / 20. ISBN ile doğru adla bulunan: 14 / 20. Kapağı olan: 5 / 20.
 
-#### Bu haftanın çok satanları
+"Taş Kağıt Makas"ın ISBN'i başka bir kitabın adıyla çıkıyor; sayılmadı.
+
+### Bu haftanın çok satanları
 
 | Kitap | Adıyla arayınca | Kayıttaki ad ve yazar | Kapak | ISBN ile arayınca |
 | --- | --- | --- | --- | --- |
 | Vatanın Kalbi | yok | — | — | yok |
 | Benim İçin Bir Yıldız Sakla | yok | — | — | yok |
-| Robonlar Bir Kaçış Operasyonu | yok | — | — | adı farklı: Robots - An Escape Operation (Turkiska) — Mert Arık |
-| Cumhuriyet’in İlk Sabahı | 1. | Cumhuriyetin Ilk Sabahi — Ilber Ortayli, Sermin Yasar | hayır | Cumhuriyetin Ilk Sabahi — Ilber Ortayli, Sermin Yasar |
+| Robonlar Bir Kaçış Operasyonu | yok | — | — | yok |
+| Cumhuriyet’in İlk Sabahı | 1. | Cumhuriyetin Ilk Sabahi — Ilber Ortayli, Sermin Yasar | hayır | yok |
 | Müdürün Uçan Peruğu | yok | — | — | yok |
 | Roma’nın Beş Günü | yok | — | — | yok |
 | Gizli Dedektifler Okulu | yok | — | — | yok |
@@ -367,11 +387,10 @@ Adıyla ilk 5’te: 10 / 20. ISBN ile doğru adla bulunan: 15 / 20. Kapağı ola
 | Büyüdüm Ben! | yok | — | — | yok |
 | Tutumlu Kedi Frida’nın Maceraları | yok | — | — | yok |
 
-Adıyla ilk 5’te: 2 / 15. ISBN ile doğru adla bulunan: 2 / 15. Kapağı olan: 0 / 15.
+Adıyla ilk 5’te: 2 / 15. ISBN ile doğru adla bulunan: 1 / 15. Kapağı olan: 0 / 15.
 
 ## Ölçülmeyenler
 
-- Google Books API'sinin kendi sıralaması ve küçük resim oranı: anahtar olmadan ölçülemiyor. Anahtarla
-  `GOOGLE_BOOKS_KEY=… node scripts/compare-sources.mjs` aynı tabloları API'den üretir.
 - Telefonlarda davranış (iPhone Safari, Android Chrome): arama ve kapak indirme yalnızca masaüstü Chrome'da denendi.
 - Tolga'nın kendi kitaplarından 4 ISBN: `node scripts/compare-sources.mjs <isbn> …` ile eklenir.
+- Google'ın günlük kotasının sayısı: konsolda (Books API › Quotas) görülür; ölçüm günü yaklaşık 250 istek sorunsuz geçti.

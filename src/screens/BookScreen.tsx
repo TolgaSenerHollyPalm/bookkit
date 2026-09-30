@@ -14,6 +14,7 @@ import { sortedNotes, tabOf } from '../books/library.ts'
 import { addNote, editNote, filterNotes, removeNote, type NoteDraft, type NoteFilter } from '../books/notes.ts'
 import { ACTIONS, applyAction, rateBook, type BookAction } from '../books/status.ts'
 import { ACTION_LABELS, authorLine, KIND_LABELS, noteMeta, STATUS_LABELS } from '../books/texts.ts'
+import { googlePage } from '../search/googleBooks.ts'
 import type { BookNote, BookStatus } from '../books/types.ts'
 import BookCover from '../ui/BookCover.tsx'
 import FilterChips from '../ui/FilterChips.tsx'
@@ -86,6 +87,12 @@ export default function BookScreen({ bookId }: { bookId: string }) {
             {STATUS_LABELS[book.status]}
           </Chip>
           {date && <span className={styles.date}>{date}</span>}
+          {/* Google's terms: wherever a book's information from Google Books is shown, its page there is linked. */}
+          {book.source?.kind === 'googlebooks' && book.source.id && (
+            <a className={styles.source} href={googlePage(book.source.id)} target="_blank" rel="noreferrer">
+              Google Books’ta gör
+            </a>
+          )}
         </span>
       }
       // Back to the list this book is on, which is another one after "Bitirdim".
