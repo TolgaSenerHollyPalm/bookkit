@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>BookKit — Kitaplık</title>
+</head>
+<body>
+<x-dc>
+<helmet>
+<!-- Fontlar: Bricolage Grotesque + Figtree -->
+<style>
+body{margin:0;background:#F7F5F0}
+a{color:#7E2F50}a:hover{color:#9B3D63}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; display: flex; flex-direction: column; background: #F7F5F0; color: #1B1F1E; font-family: 'Figtree', system-ui, sans-serif">
+
+<header style="padding: 14px 20px 0; height: 62px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between">
+<div style="display: flex; align-items: center; gap: 10px">
+<svg width="32" height="32" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="112" fill="#9B3D63"></rect><rect x="150" y="104" width="228" height="304" rx="30" fill="#F4D3BD"></rect><rect x="134" y="104" width="228" height="304" rx="30" fill="#FFF4E6"></rect><rect x="134" y="104" width="46" height="304" rx="23" fill="#F4D3BD"></rect><path d="M290 104h44v172l-22-20-22 20z" fill="#FF6B57"></path></svg>
+<span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; font-weight: 700; letter-spacing: -0.02em">BookKit</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 999px; background: #E2F3E8; color: #1E6B3C; font-size: 13px; font-weight: 600"><span style="width: 7px; height: 7px; border-radius: 999px; background: #22A05A"></span>Çevrimiçi</span>
+<button aria-label="Ayarlar" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid #E8E2D7; background: #FFFFFF; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9" fill="none" stroke="#1B1F1E" stroke-width="1.8" stroke-linecap="round"></path><circle cx="15" cy="7" r="2.2" fill="none" stroke="#1B1F1E" stroke-width="1.8"></circle><circle cx="9" cy="17" r="2.2" fill="none" stroke="#1B1F1E" stroke-width="1.8"></circle></svg></button>
+</div>
+</header>
+
+<div style="padding: 22px 20px 16px; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 14px; font-weight: 600; color: #5E6562">2026’da 7 kitap bitirdin</span>
+<h1 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: 32px; line-height: 1.05; letter-spacing: -0.035em; font-weight: 800">Kitaplığın</h1>
+</div>
+
+<div role="tablist" aria-label="Kitap listesi" style="margin: 0 20px; padding: 4px; border-radius: 14px; background: #EDE8DE; display: flex; gap: 4px">
+<button id="tab-reading" role="tab" aria-selected="true" aria-controls="panel-reading" style="flex: 1 1 auto; height: 40px; padding: 0 6px; border: 0; border-radius: 11px; background: #FFFFFF; box-shadow: 0 1px 3px rgba(27, 31, 30, 0.12); color: #1B1F1E; font: inherit; font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 5px; white-space: nowrap; cursor: pointer">Okuyorum<span style="color: #9B3D63; font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums">2</span></button>
+<button role="tab" aria-selected="false" style="flex: 1 1 auto; height: 40px; padding: 0 6px; border: 0; border-radius: 11px; background: transparent; color: #5E6562; font: inherit; font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 5px; white-space: nowrap; cursor: pointer">Okumak istiyorum<span style="color: #5E6562; font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums">5</span></button>
+<button role="tab" aria-selected="false" style="flex: 1 1 auto; height: 40px; padding: 0 6px; border: 0; border-radius: 11px; background: transparent; color: #5E6562; font: inherit; font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 5px; white-space: nowrap; cursor: pointer">Okudum<span style="color: #5E6562; font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums">7</span></button>
+</div>
+
+<div id="panel-reading" role="tabpanel" aria-labelledby="tab-reading" style="margin: 16px 20px 0; display: flex; flex-direction: column; gap: 12px">
+
+<a href="03-kitap.html" style="display: flex; align-items: center; gap: 16px; padding: 14px 14px 14px 14px; background: #FFFFFF; border: 1px solid #E8E2D7; border-radius: 20px; text-decoration: none; color: #1B1F1E">
+<span aria-hidden="true" style="position: relative; width: 64px; height: 96px; box-sizing: border-box; flex-shrink: 0; padding: 9px 7px 8px 10px; border-radius: 6px; background: #2F5D50; color: #FFF4E6; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 8px 14px -10px rgba(27, 31, 30, 0.55)"><span style="position: absolute; left: 4px; top: 0; bottom: 0; width: 1px; background: rgba(255, 244, 230, 0.22)"></span><span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 11px; line-height: 1.05; font-weight: 700; letter-spacing: -0.01em">Anna Karenina</span><span style="font-size: 8px; line-height: 1.2; font-weight: 600">Lev Tolstoy</span></span>
+<span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px">
+<span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 18px; line-height: 1.15; font-weight: 700; letter-spacing: -0.02em">Anna Karenina</span>
+<span style="font-size: 14px; color: #5E6562">Lev Tolstoy</span>
+<span style="margin-top: 6px; font-size: 13px; color: #5E6562">12 Eylül’de başladın · 3 not</span>
+</span>
+<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0"><path d="M9 6l6 6-6 6" fill="none" stroke="#8C918E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</a>
+
+<a href="03-kitap.html" style="display: flex; align-items: center; gap: 16px; padding: 14px 14px 14px 14px; background: #FFFFFF; border: 1px solid #E8E2D7; border-radius: 20px; text-decoration: none; color: #1B1F1E">
+<span aria-hidden="true" style="position: relative; width: 64px; height: 96px; box-sizing: border-box; flex-shrink: 0; padding: 9px 7px 8px 10px; border-radius: 6px; background: #8C5E1C; color: #FFF4E6; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 8px 14px -10px rgba(27, 31, 30, 0.55)"><span style="position: absolute; left: 4px; top: 0; bottom: 0; width: 1px; background: rgba(255, 244, 230, 0.22)"></span><span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 11px; line-height: 1.05; font-weight: 700; letter-spacing: -0.01em">Saatleri Ayarlama Enstitüsü</span><span style="font-size: 8px; line-height: 1.2; font-weight: 600">Ahmet Hamdi Tanpınar</span></span>
+<span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px">
+<span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 18px; line-height: 1.15; font-weight: 700; letter-spacing: -0.02em">Saatleri Ayarlama Enstitüsü</span>
+<span style="font-size: 14px; color: #5E6562">Ahmet Hamdi Tanpınar</span>
+<span style="margin-top: 6px; font-size: 13px; color: #5E6562">2 Eylül’de başladın · 1 not</span>
+</span>
+<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0"><path d="M9 6l6 6-6 6" fill="none" stroke="#8C918E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</a>
+
+</div>
+
+<h2 style="margin: 28px 20px 10px; font-family: 'Bricolage Grotesque', sans-serif; font-size: 19px; font-weight: 700; letter-spacing: -0.02em">Son notun</h2>
+<a href="03-kitap.html" style="margin: 0 20px; padding: 16px; background: #FFFFFF; border: 1px solid #E8E2D7; border-radius: 20px; text-decoration: none; color: #1B1F1E; display: flex; flex-direction: column; gap: 8px">
+<span style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #5E6562"><span style="padding: 3px 9px; border-radius: 999px; background: #EFEAE0; color: #4A504D; font-size: 12px; font-weight: 700">Not</span><span>Anna Karenina · s. 612 · 26 Eylül</span></span>
+<span style="font-size: 15px; line-height: 1.5; text-wrap: pretty">Kitty ile Levin’in tebeşirle baş harfleri yazarak anlaştığı sahne, ilk okuyuşumdan da aklımda kalmıştı.</span>
+</a>
+
+<a href="02-kitap-ekle.html" style="position: absolute; left: 20px; right: 20px; bottom: 28px; height: 54px; border-radius: 999px; background: #9B3D63; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 12px 24px -12px rgba(126, 47, 80, 0.6)"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"></path></svg>Kitap ekle</a>
+
+</div>
+</x-dc>
+</body>
+</html>

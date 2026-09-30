@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>BookKit — Kitap</title>
+</head>
+<body>
+<x-dc>
+<helmet>
+<!-- Fontlar: Bricolage Grotesque + Figtree -->
+<style>
+body{margin:0;background:#F7F5F0}
+a{color:#7E2F50}a:hover{color:#9B3D63}
+</style>
+</helmet>
+<div style="width: 390px; height: 1064px; box-sizing: border-box; position: relative; overflow: hidden; display: flex; flex-direction: column; background: #F7F5F0; color: #1B1F1E; font-family: 'Figtree', system-ui, sans-serif">
+
+<header style="padding: 12px 20px 0; height: 60px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between">
+<a href="01-kitaplik.html" aria-label="Geri" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid #E8E2D7; background: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6" fill="none" stroke="#1B1F1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>
+<button aria-label="Diğer işlemler" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid #E8E2D7; background: #FFFFFF; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.7" fill="#1B1F1E"></circle><circle cx="12" cy="12" r="1.7" fill="#1B1F1E"></circle><circle cx="19" cy="12" r="1.7" fill="#1B1F1E"></circle></svg></button>
+</header>
+
+<div style="margin: 16px 20px 0; display: flex; gap: 18px">
+<span aria-hidden="true" style="position: relative; width: 120px; height: 180px; box-sizing: border-box; flex-shrink: 0; padding: 16px 12px 14px 18px; border-radius: 8px; background: #2F5D50; color: #FFF4E6; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 16px 24px -16px rgba(27, 31, 30, 0.6)"><span style="position: absolute; left: 7px; top: 0; bottom: 0; width: 1.5px; background: rgba(255, 244, 230, 0.22)"></span><span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 20px; line-height: 1.02; font-weight: 700; letter-spacing: -0.02em">Anna Karenina</span><span style="font-size: 13px; line-height: 1.2; font-weight: 600">Lev Tolstoy</span></span>
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 2px 0">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: 30px; line-height: 1.05; letter-spacing: -0.035em; font-weight: 800">Anna Karenina</h1>
+<span style="font-size: 16px; color: #5E6562">Lev Tolstoy</span>
+</div>
+<div style="display: flex; flex-direction: column; align-items: flex-start; gap: 6px">
+<span style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 999px; background: #F6E6EC; color: #7E2F50; font-size: 13px; font-weight: 700"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5zM12 6.5v13" fill="none" stroke="#7E2F50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>Okuyorum</span>
+<span style="font-size: 13px; color: #5E6562">12 Eylül 2026’da başladın</span>
+</div>
+</div>
+</div>
+
+<div style="margin: 20px 20px 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<button style="height: 44px; border-radius: 999px; border: 0; background: #F6E6EC; color: #7E2F50; font: inherit; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#7E2F50" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>Bitirdim</button>
+<button style="height: 44px; border-radius: 999px; border: 1px solid #E8E2D7; background: #FFFFFF; color: #7E2F50; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer">Yarım bıraktım</button>
+</div>
+
+<section aria-labelledby="rating-title" style="margin: 12px 20px 0; padding: 12px 12px 8px 16px; background: #FFFFFF; border: 1px solid #E8E2D7; border-radius: 20px; display: flex; flex-direction: column; gap: 2px">
+<div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding-right: 4px">
+<h2 id="rating-title" style="margin: 0; font-size: 15px; font-weight: 700">Puan</h2>
+<span id="rating-hint" style="font-size: 13px; color: #5E6562">Bitirince puan verebilirsin</span>
+</div>
+<div role="group" aria-labelledby="rating-title" aria-describedby="rating-hint" style="margin-left: -11px; display: flex">
+<button disabled="" aria-label="1 yıldız" style="width: 44px; height: 44px; border: 0; background: transparent; padding: 0; display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z" fill="none" stroke="#B7B0A3" stroke-width="1.8" stroke-linejoin="round"></path></svg></button>
+<button disabled="" aria-label="2 yıldız" style="width: 44px; height: 44px; border: 0; background: transparent; padding: 0; display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z" fill="none" stroke="#B7B0A3" stroke-width="1.8" stroke-linejoin="round"></path></svg></button>
+<button disabled="" aria-label="3 yıldız" style="width: 44px; height: 44px; border: 0; background: transparent; padding: 0; display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z" fill="none" stroke="#B7B0A3" stroke-width="1.8" stroke-linejoin="round"></path></svg></button>
+<button disabled="" aria-label="4 yıldız" style="width: 44px; height: 44px; border: 0; background: transparent; padding: 0; display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z" fill="none" stroke="#B7B0A3" stroke-width="1.8" stroke-linejoin="round"></path></svg></button>
+<button disabled="" aria-label="5 yıldız" style="width: 44px; height: 44px; border: 0; background: transparent; padding: 0; display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z" fill="none" stroke="#B7B0A3" stroke-width="1.8" stroke-linejoin="round"></path></svg></button>
+</div>
+</section>
+
+<div style="margin: 28px 20px 0; display: flex; align-items: center; gap: 8px">
+<h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: 19px; font-weight: 700; letter-spacing: -0.02em">Notlar ve alıntılar</h2>
+<span style="min-width: 24px; height: 24px; padding: 0 7px; box-sizing: border-box; border-radius: 999px; background: #EFEAE0; color: #4A504D; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">3</span>
+</div>
+
+<div role="group" aria-label="Göster" style="margin: 6px 20px 0; display: flex; gap: 8px">
+<button aria-pressed="true" style="height: 44px; border: 0; background: transparent; padding: 0; font: inherit; cursor: pointer; display: flex; align-items: center"><span style="height: 34px; padding: 0 14px; box-sizing: border-box; border-radius: 999px; border: 2px solid #9B3D63; background: #F6E6EC; color: #7E2F50; font-size: 14px; font-weight: 700; display: inline-flex; align-items: center">Hepsi</span></button>
+<button aria-pressed="false" style="height: 44px; border: 0; background: transparent; padding: 0; font: inherit; cursor: pointer; display: flex; align-items: center"><span style="height: 34px; padding: 0 14px; box-sizing: border-box; border-radius: 999px; border: 1px solid #E8E2D7; background: #FFFFFF; color: #1B1F1E; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center">Notlar</span></button>
+<button aria-pressed="false" style="height: 44px; border: 0; background: transparent; padding: 0; font: inherit; cursor: pointer; display: flex; align-items: center"><span style="height: 34px; padding: 0 14px; box-sizing: border-box; border-radius: 999px; border: 1px solid #E8E2D7; background: #FFFFFF; color: #1B1F1E; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center">Alıntılar</span></button>
+</div>
+
+<div style="margin: 6px 20px 0; display: flex; flex-direction: column; gap: 12px">
+
+<article style="padding: 14px 16px 16px; background: #FFFFFF; border: 1px solid #E8E2D7; border-radius: 20px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="height: 24px; padding: 0 9px; border-radius: 999px; background: #EFEAE0; color: #4A504D; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center">Not</span>
+<span style="font-size: 13px; color: #5E6562">s. 612 · 26 Eylül</span>
+</div>
+<p style="margin: 0; font-size: 15px; line-height: 1.55">Kitty ile Levin’in tebeşirle baş harfleri yazarak anlaştığı sahne, ilk okuyuşumdan da aklımda kalmıştı.</p>
+</article>
+
+<article style="padding: 14px 16px 16px; background: #FFFFFF; border: 1px solid #E8E2D7; border-radius: 20px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="height: 24px; padding: 0 9px; border-radius: 999px; background: #EFEAE0; color: #4A504D; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center">Not</span>
+<span style="font-size: 13px; color: #5E6562">s. 271 · 19 Eylül</span>
+</div>
+<p style="margin: 0; font-size: 15px; line-height: 1.55">Levin’in köylülerle çayır biçtiği bölüm: işin içinde kaybolmak. Kendi işimde de böyle anlar oluyor.</p>
+</article>
+
+<article style="padding: 14px 16px 18px; background: #FFFFFF; border: 1px solid #E8E2D7; border-radius: 20px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="height: 24px; padding: 0 9px; border-radius: 999px; background: #F6E6EC; color: #7E2F50; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center">Alıntı</span>
+<span style="font-size: 13px; color: #5E6562">s. 1 · 12 Eylül</span>
+</div>
+<blockquote style="margin: 4px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px">
+<svg width="34" height="26" viewBox="0 0 34 26" aria-hidden="true"><path d="M2 26V16.5C2 8.6 6.2 3.2 13.6 1l1.6 3.4C10.8 6.3 8.9 9.4 8.7 13H14v13zM19.5 26V16.5c0-7.9 4.2-13.3 11.6-15.5l1.6 3.4c-4.4 1.9-6.3 5-6.5 8.6h5.3v13z" fill="#9B3D63"></path></svg>
+<p style="margin: 0; font-size: 18px; line-height: 1.5; font-weight: 500; letter-spacing: -0.005em">Mutlu ailelerin hepsi birbirine benzer; her mutsuz aile ise kendince mutsuzdur.</p>
+</blockquote>
+</article>
+
+</div>
+
+<a href="04-not-ekle.html" style="position: absolute; left: 20px; right: 20px; bottom: 28px; height: 54px; border-radius: 999px; background: #9B3D63; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 12px 24px -12px rgba(126, 47, 80, 0.6)"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"></path></svg>Not ekle</a>
+
+</div>
+</x-dc>
+</body>
+</html>

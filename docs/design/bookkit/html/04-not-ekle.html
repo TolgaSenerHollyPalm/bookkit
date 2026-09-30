@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>BookKit — Not ekle</title>
+</head>
+<body>
+<x-dc>
+<helmet>
+<!-- Fontlar: Bricolage Grotesque + Figtree -->
+<style>
+body{margin:0;background:#F7F5F0}
+a{color:#7E2F50}a:hover{color:#9B3D63}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: #F7F5F0; color: #1B1F1E; font-family: 'Figtree', system-ui, sans-serif">
+
+<div aria-hidden="true" style="padding: 12px 20px 0">
+<div style="height: 48px; display: flex; align-items: center; justify-content: space-between"><span style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid #E8E2D7; background: #FFFFFF"></span><span style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid #E8E2D7; background: #FFFFFF"></span></div>
+<div style="margin-top: 16px; display: flex; gap: 18px">
+<span style="width: 120px; height: 180px; box-sizing: border-box; flex-shrink: 0; padding: 16px 12px 14px 18px; border-radius: 8px; background: #2F5D50; color: #FFF4E6; font-family: 'Bricolage Grotesque', sans-serif; font-size: 20px; line-height: 1.02; font-weight: 700; letter-spacing: -0.02em">Anna Karenina</span>
+<div style="display: flex; flex-direction: column; gap: 4px; padding-top: 2px"><span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 30px; line-height: 1.05; letter-spacing: -0.035em; font-weight: 800">Anna Karenina</span><span style="font-size: 16px; color: #5E6562">Lev Tolstoy</span></div>
+</div>
+<div style="margin-top: 20px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px"><span style="height: 44px; border-radius: 999px; background: #F6E6EC"></span><span style="height: 44px; border-radius: 999px; border: 1px solid #E8E2D7; background: #FFFFFF"></span></div>
+<div style="margin-top: 12px; height: 90px; border-radius: 20px; background: #FFFFFF; border: 1px solid #E8E2D7"></div>
+</div>
+<div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(27, 31, 30, 0.45)"></div>
+
+<section role="dialog" aria-modal="true" aria-labelledby="note-title" aria-describedby="note-book" style="position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 20px 28px; border-radius: 24px 24px 0 0; background: #FFFFFF; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 -10px 24px rgba(27, 31, 30, 0.12)">
+<span aria-hidden="true" style="align-self: center; width: 36px; height: 4px; border-radius: 999px; background: #D8D1C4"></span>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<h2 id="note-title" style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: 24px; line-height: 1.1; letter-spacing: -0.03em; font-weight: 800">Not ekle</h2>
+<span id="note-book" style="font-size: 14px; color: #5E6562">Anna Karenina</span>
+</div>
+
+<form style="margin: 0; display: flex; flex-direction: column; gap: 16px">
+<div role="radiogroup" aria-label="Tür" style="padding: 4px; border-radius: 14px; background: #EDE8DE; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px">
+<button type="button" role="radio" aria-checked="true" style="height: 40px; border: 0; border-radius: 11px; background: #FFFFFF; box-shadow: 0 1px 3px rgba(27, 31, 30, 0.12); color: #1B1F1E; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer">Not</button>
+<button type="button" role="radio" aria-checked="false" style="height: 40px; border: 0; border-radius: 11px; background: transparent; color: #5E6562; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer">Alıntı</button>
+</div>
+
+<div style="display: flex; flex-direction: column">
+<label for="note-text" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap">Not</label>
+<textarea id="note-text" rows="4" style="width: 100%; height: 128px; box-sizing: border-box; margin: 0; padding: 13px 15px; border: 2px solid #9B3D63; border-radius: 16px; background: #FFFFFF; box-shadow: 0 0 0 3px #F6E6EC; font: inherit; font-size: 16px; line-height: 1.5; color: #1B1F1E; resize: none; outline: none">Anna’nın trene bindiği sahneleri bir daha okumak istiyorum.</textarea>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="note-page" style="font-size: 14px; font-weight: 600">Sayfa <span style="font-weight: 500; color: #5E6562">(isteğe bağlı)</span></label>
+<input id="note-page" type="text" inputmode="numeric" value="734" style="width: 112px; height: 48px; box-sizing: border-box; margin: 0; padding: 0 14px; border: 1px solid #948C80; border-radius: 14px; background: #FFFFFF; font: inherit; font-size: 16px; color: #1B1F1E; outline: none">
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 4px">
+<button type="submit" style="height: 52px; border-radius: 999px; border: 0; background: #9B3D63; color: #FFFFFF; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer">Kaydet</button>
+<a href="03-kitap.html" style="height: 44px; display: flex; align-items: center; justify-content: center; color: #7E2F50; text-decoration: none; font-size: 15px; font-weight: 600">Vazgeç</a>
+</div>
+</form>
+</section>
+
+</div>
+</x-dc>
+</body>
+</html>
