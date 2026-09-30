@@ -37,8 +37,8 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          # A browser key: public in the built files and restricted to the site's address. Unset, Google Books is not offered.
-          VITE_GOOGLE_BOOKS_KEY: ${{ vars.VITE_GOOGLE_BOOKS_KEY }}
+          # A secret, so this public repository's logs mask it; it still ends up in the built files, as any browser key does.
+          VITE_GOOGLE_BOOKS_KEY: ${{ secrets.VITE_GOOGLE_BOOKS_KEY }}
       - name: Setup Pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
       - name: Upload artifact

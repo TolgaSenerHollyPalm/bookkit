@@ -47,8 +47,9 @@ Google, kullanım koşullarının izin verdiği biçimde kullanılır:
 - Google sonuçları ayrı bir bölümdür: Google'ın sırası ve yazımıyla, "powered by Google" logosuyla, her satırda
   Google Books sayfasına bağlantıyla. Open Library sonuçlarıyla birleştirilmez.
 - Google'dan eklenen kitabın kapağı saklanamaz; internet varken gösterilir, yokken uygulamanın çizdiği kapak kalır.
-- Anahtar `VITE_GOOGLE_BOOKS_KEY` ile verilir (yerelde `.env.local`, yayında GitHub Actions değişkeni). Anahtar yoksa
-  düğme hiç görünmez.
+- Anahtar `VITE_GOOGLE_BOOKS_KEY` ile verilir: yerelde git'e girmeyen `.env.local`, yayında GitHub Actions gizli değeri
+  (secret; depo herkese açık olduğu için derleme kayıtlarında maskelensin diye). Depoya yazılmaz. Anahtar yoksa düğme
+  hiç görünmez.
 
 ## Open Library
 
