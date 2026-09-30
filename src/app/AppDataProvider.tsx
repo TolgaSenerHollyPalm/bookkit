@@ -1,9 +1,11 @@
+import { trackDataSince } from 'kitshelf-ui/backup/state.ts'
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { withBook } from '../books/library.ts'
 import { stampBook } from '../books/status.ts'
 import type { Book } from '../books/types.ts'
 import { downloadCover, wantingCover } from '../covers/download.ts'
 import { blockedByAnotherTab, deleteBook as removeBook, deleteCover, loadBooks, loadCovers, requestPersistentStorage, saveBook as storeBook, saveCover, type StoredCover } from '../storage/db.ts'
+import { KIT } from '../kit.ts'
 import { AppDataContext } from './appData.ts'
 import styles from './AppDataProvider.module.css'
 
@@ -22,6 +24,20 @@ function keepCover(bookId: string, cover: StoredCover): void {
   coverAddresses.set(bookId, URL.createObjectURL(new Blob([cover.bytes], { type: cover.type })))
 }
 
+// Reads the books and makes their stored covers showable; a cover without its book, or of an address the book
+// no longer names, is left over and cleared away.
+async function readStored(): Promise<Book[]> {
+  const [stored, storedCovers] = await Promise.all([loadBooks(), loadCovers()])
+  for (const address of coverAddresses.values()) URL.revokeObjectURL(address)
+  coverAddresses.clear()
+  for (const [bookId, cover] of storedCovers) {
+    if (stored.some((book) => book.id === bookId && book.coverUrl === cover.url)) keepCover(bookId, cover)
+    else deleteCover(bookId).catch(console.error)
+  }
+  tried.clear()
+  return stored
+}
+
 /** Loads the books and their covers from IndexedDB once, then keeps them in memory and writes every change back. */
 export default function AppDataProvider({ children }: { children: ReactNode }) {
   const [books, setBooks] = useState<Book[]>()
@@ -32,6 +48,8 @@ export default function AppDataProvider({ children }: { children: ReactNode }) {
 
   const apply = useCallback((next: Book[]) => {
     current = next
+    // The backup reminder's clock starts with the first book and stops when the last one is deleted.
+    trackDataSince(KIT, next.length > 0, new Date())
     setBooks(next)
   }, [])
 
@@ -73,20 +91,21 @@ export default function AppDataProvider({ children }: { children: ReactNode }) {
     }
   }, [apply, report])
 
+  const show = useCallback(
+    (stored: Book[]) => {
+      setCovers(new Map(coverAddresses))
+      apply(stored)
+      void fetchCovers()
+    },
+    [apply, fetchCovers],
+  )
+
   useEffect(() => {
     let active = true
     requestPersistentStorage()
-    Promise.all([loadBooks(), loadCovers()])
-      .then(([stored, storedCovers]) => {
-        if (!active) return
-        for (const [bookId, cover] of storedCovers) {
-          // A cover without its book, or of an address the book no longer names, is left over: clear it away.
-          if (stored.some((book) => book.id === bookId && book.coverUrl === cover.url)) keepCover(bookId, cover)
-          else deleteCover(bookId).catch(console.error)
-        }
-        setCovers(new Map(coverAddresses))
-        apply(stored)
-        void fetchCovers()
+    readStored()
+      .then((stored) => {
+        if (active) show(stored)
       })
       .catch((error: unknown) => {
         console.error(error)
@@ -95,7 +114,10 @@ export default function AppDataProvider({ children }: { children: ReactNode }) {
     return () => {
       active = false
     }
-  }, [apply, fetchCovers])
+  }, [show])
+
+  // A restore writes straight to IndexedDB; memory follows by reading it back.
+  const reload = useCallback(() => readStored().then(show), [show])
 
   // What could not be fetched is asked for again whenever the connection comes back.
   useEffect(() => {
@@ -138,7 +160,7 @@ export default function AppDataProvider({ children }: { children: ReactNode }) {
     [apply, report],
   )
 
-  const value = useMemo(() => books && { books, covers, saveBook, deleteBook }, [books, covers, saveBook, deleteBook])
+  const value = useMemo(() => books && { books, covers, saveBook, deleteBook, reload }, [books, covers, saveBook, deleteBook, reload])
 
   if (loadFailed) {
     return <p className={styles.message}>Kayıtlı veriler açılamadı. Uygulamayı kapatıp yeniden aç.</p>

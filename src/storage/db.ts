@@ -1,4 +1,6 @@
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb'
+import type { RestoreCount, RestoreMode } from 'kitshelf-ui/backup/format.ts'
+import { planRestore, type KitData } from '../backup/restorePlan.ts'
 import type { Book } from '../books/types.ts'
 import { DATABASE_NAME } from '../kit.ts'
 import { DATA_VERSION, migrateBook } from './migrations.ts'
@@ -94,6 +96,18 @@ export async function saveCover(bookId: string, cover: StoredCover): Promise<boo
 export async function deleteCover(bookId: string): Promise<void> {
   const db = await database()
   await db.delete('covers', bookId)
+}
+
+/** Writes a backup in one transaction; a failure anywhere leaves the device as it was. */
+export async function restoreBackup(data: KitData, mode: RestoreMode): Promise<RestoreCount[]> {
+  const db = await database()
+  const tx = db.transaction(['books', 'covers'], 'readwrite')
+  const [books, covers] = [tx.objectStore('books'), tx.objectStore('covers')]
+  // Read and planned inside the transaction; awaiting anything but its own requests would end it.
+  const [stored, coverIds, storedCovers] = await Promise.all([books.getAll(), covers.getAllKeys(), covers.getAll()])
+  const plan = planRestore({ books: stored, coverUrls: new Map(coverIds.map((id, index) => [id, storedCovers[index].url])) }, data, mode)
+  await Promise.all([...(plan.clear ? [books.clear()] : []), ...plan.books.map((book) => books.put(book)), ...plan.staleCovers.map((id) => covers.delete(id)), tx.done])
+  return plan.counts
 }
 
 /** Asks the browser not to clear our data when the device runs low on space. */

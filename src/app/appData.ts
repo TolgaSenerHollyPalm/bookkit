@@ -9,6 +9,8 @@ export interface AppData {
   /** Stores a book, adding it when it is new, and stamps it with the time. */
   saveBook: (book: Book) => void
   deleteBook: (bookId: string) => void
+  /** Reads everything from IndexedDB again, e.g. after a backup was restored. */
+  reload: () => Promise<void>
 }
 
 export const AppDataContext = createContext<AppData | null>(null)
