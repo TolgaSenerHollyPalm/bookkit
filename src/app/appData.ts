@@ -15,3 +15,9 @@ export function useAppData(): AppData {
   if (!data) throw new Error('useAppData must be used inside <AppDataProvider>')
   return data
 }
+
+/** One book of the library by its id, with the ways to change it. */
+export function useBook(bookId: string) {
+  const { books, saveBook, deleteBook } = useAppData()
+  return { book: books.find((candidate) => candidate.id === bookId), books, saveBook, deleteBook }
+}

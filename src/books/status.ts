@@ -18,6 +18,13 @@ function omit(book: Book, ...keys: ('startedAt' | 'finishedAt' | 'rating')[]): B
   return copy
 }
 
+/** Drops what a state cannot have: dates on the wish list, a finishing day while reading, a rating unless finished. */
+export function tidyBook(book: Book): Book {
+  if (book.status === 'want') return omit(book, 'startedAt', 'finishedAt', 'rating')
+  if (book.status === 'reading') return omit(book, 'finishedAt', 'rating')
+  return book.status === 'read' ? book : omit(book, 'rating')
+}
+
 /** The one place a book changes state; the edit form goes through it too. */
 export function applyAction(book: Book, action: BookAction, today: Day): Book {
   switch (action) {

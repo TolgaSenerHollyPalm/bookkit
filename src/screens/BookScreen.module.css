@@ -1,0 +1,150 @@
+/* Under the title, beside the cover: who wrote it, where it stands, and since when. */
+.meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.authors {
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.date {
+  font-size: 0.8125rem;
+}
+
+.actions {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.rating {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 12px 8px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.ratingTop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2px 12px;
+  padding-right: 4px;
+}
+
+.ratingTitle {
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.ratingHint {
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+}
+
+.notesTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: calc(var(--gap-section) - var(--gap-card));
+}
+
+.notesTitle h2 {
+  font-size: 1.1875rem;
+  font-weight: 700;
+}
+
+.count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 7px;
+  border-radius: var(--radius-pill);
+  background: var(--color-chip);
+  color: var(--color-chip-text);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.empty {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+.notes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-card);
+}
+
+/* A note is a button: tapping it opens the sheet that changes it. */
+.note {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.note:active {
+  background: var(--color-bg);
+}
+
+@media (hover: hover) {
+  .note:hover {
+    border-color: var(--color-check-border);
+  }
+}
+
+.noteTop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+}
+
+.noteText {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+.quote {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+.quote svg {
+  color: var(--color-primary);
+}

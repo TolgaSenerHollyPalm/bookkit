@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ACTIONS, applyAction, changeStatus, dateProblems, newBook, rateBook, stampBook } from './status.ts'
+import { ACTIONS, applyAction, changeStatus, dateProblems, newBook, rateBook, stampBook, tidyBook } from './status.ts'
 import { book } from './test-helpers.ts'
 
 const TODAY = '2026-10-05'
@@ -94,6 +94,19 @@ describe('rating and stamping', () => {
 
   it('marks when the book was last changed', () => {
     expect(stampBook(book(), new Date('2026-10-05T18:00:00.000Z')).updatedAt).toBe('2026-10-05T18:00:00.000Z')
+  })
+})
+
+describe('tidyBook', () => {
+  const full = { startedAt: '2026-08-01', finishedAt: '2026-09-01', rating: 5 } as const
+
+  it('keeps only what the state can have', () => {
+    expect(Object.keys(tidyBook(book({ status: 'want', ...full })))).not.toEqual(expect.arrayContaining(['startedAt', 'finishedAt', 'rating']))
+    expect(tidyBook(book({ status: 'reading', ...full }))).toMatchObject({ startedAt: '2026-08-01' })
+    expect(Object.keys(tidyBook(book({ status: 'reading', ...full })))).not.toEqual(expect.arrayContaining(['finishedAt', 'rating']))
+    expect(tidyBook(book({ status: 'read', ...full }))).toMatchObject(full)
+    expect(tidyBook(book({ status: 'abandoned', ...full }))).toMatchObject({ startedAt: '2026-08-01', finishedAt: '2026-09-01' })
+    expect('rating' in tidyBook(book({ status: 'abandoned', ...full }))).toBe(false)
   })
 })
 

@@ -10,6 +10,8 @@ const split = (day: Day) => day.split('-').map(Number) as [year: number, month: 
 /** The local calendar day of a moment. */
 export const toDay = (date: Date): Day => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
 
+export const today = (now = new Date()): Day => toDay(now)
+
 /** The local day an ISO timestamp falls on; its first ten characters would be the day in UTC. */
 export const dayOf = (iso: string): Day => toDay(new Date(iso))
 

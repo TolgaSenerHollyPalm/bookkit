@@ -1,0 +1,66 @@
+/* "Not" or "Alıntı": real radio buttons, drawn as one segmented control. */
+.kinds {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  margin: 0;
+  padding: 4px;
+  border: 0;
+  border-radius: var(--radius-field);
+  background: var(--color-sunken);
+}
+
+.kind {
+  position: relative;
+  display: grid;
+  cursor: pointer;
+}
+
+/* The input covers its label, unseen: a tap, the arrow keys and a screen reader all still reach it. */
+.kind input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.kind span {
+  display: grid;
+  place-items: center;
+  min-height: var(--tap-size);
+  border-radius: 11px;
+  color: var(--color-muted);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.kind input:checked + span {
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: 0 1px 3px rgb(27 31 30 / 0.12);
+}
+
+.kind input:focus-visible + span {
+  outline: 3px solid var(--color-coral);
+  outline-offset: 2px;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.remove {
+  min-height: var(--tap-size);
+  padding: 0 12px;
+  border: 0;
+  background: transparent;
+  color: var(--color-danger);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
+}

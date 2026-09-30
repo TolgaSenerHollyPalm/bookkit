@@ -1,0 +1,90 @@
+/* The same cream on every cover colour; the colours are picked to carry it at 5.1:1 or better. */
+.cover {
+  position: relative;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  background: var(--cover);
+  color: #fff4e6;
+}
+
+/* The spine: a thin light line near the left edge. */
+.cover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: rgb(255 244 230 / 0.22);
+}
+
+/* Sized by BookCover so the longest word stays whole; only a word too long for the smallest size breaks. */
+.title {
+  display: -webkit-box;
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: var(--title-size);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+}
+
+.author {
+  display: -webkit-box;
+  overflow: hidden;
+  font-weight: 600;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.card {
+  width: 64px;
+  height: 96px;
+  padding: 9px 5px 8px 10px;
+  border-radius: 6px;
+  box-shadow: 0 8px 14px -10px rgb(27 31 30 / 0.55);
+}
+
+.card::before {
+  left: 4px;
+  width: 1px;
+}
+
+.card .title {
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+}
+
+.card .author {
+  font-size: 0.5rem;
+}
+
+.page {
+  width: 120px;
+  height: 180px;
+  padding: 16px 10px 14px 18px;
+  border-radius: 8px;
+  box-shadow: 0 16px 24px -16px rgb(27 31 30 / 0.6);
+}
+
+.page::before {
+  left: 7px;
+  width: 1.5px;
+}
+
+.page .title {
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+}
+
+.page .author {
+  font-size: 0.8125rem;
+}

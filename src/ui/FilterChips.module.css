@@ -1,0 +1,39 @@
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 8px;
+}
+
+/* The chip is 34px tall; the button around it gives the finger its 44. */
+.target {
+  display: flex;
+  align-items: center;
+  min-height: var(--tap-size);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* One pixel less padding for the thicker edge, so the words stay where they were. */
+.target[aria-pressed='true'] .chip {
+  padding: 0 13px;
+  border: 2px solid var(--color-primary);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  font-weight: 700;
+}

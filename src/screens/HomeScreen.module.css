@@ -23,3 +23,120 @@
   font-size: 1.3rem;
   line-height: 1.25;
 }
+
+.books {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-card);
+  margin-top: 4px;
+}
+
+.empty {
+  padding: 8px 4px;
+  font-size: 0.9375rem;
+  color: var(--color-muted);
+}
+
+/* One book: its cover, what it is, and the quiet line about where it stands. */
+.card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.card:active {
+  background: var(--color-bg);
+}
+
+@media (hover: hover) {
+  .card:hover {
+    border-color: var(--color-check-border);
+  }
+}
+
+.cardBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+}
+
+.cardAuthor {
+  font-size: 0.875rem;
+  color: var(--color-muted);
+  overflow-wrap: anywhere;
+}
+
+.cardInfo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  margin-top: 6px;
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+}
+
+.chevron {
+  display: flex;
+  flex: none;
+  color: var(--color-chevron);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: calc(var(--gap-section) - var(--gap-card));
+}
+
+.lastNote {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: var(--space);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.lastMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+  overflow-wrap: anywhere;
+}
+
+/* The first three lines are enough to recognise the note; the book's page has the rest. */
+.lastText {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}

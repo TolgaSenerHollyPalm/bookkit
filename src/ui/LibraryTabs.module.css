@@ -1,0 +1,43 @@
+/* Like kitshelf-ui's SegmentedTabs, but each tab is as wide as its words: "Okumak istiyorum" needs more room. */
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--radius-field);
+  background: var(--color-sunken);
+}
+
+.tab {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: var(--tap-size);
+  padding: 0 6px;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--color-muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.15;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.tab[aria-selected='true'] {
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: 0 1px 3px rgb(27 31 30 / 0.12);
+}
+
+.count {
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.tab[aria-selected='true'] .count {
+  color: var(--color-primary-dark);
+}

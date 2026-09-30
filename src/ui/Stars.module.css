@@ -1,0 +1,36 @@
+/* Pulled left by the star's own padding, so the first star lines up with the heading above it. */
+.stars {
+  display: flex;
+  margin-left: -11px;
+}
+
+.star {
+  display: grid;
+  place-items: center;
+  width: var(--tap-size);
+  height: var(--tap-size);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-check-border);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.star:disabled {
+  color: var(--color-strike);
+  cursor: default;
+}
+
+.on,
+.small svg {
+  color: var(--color-amber-strong);
+}
+
+.small {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}

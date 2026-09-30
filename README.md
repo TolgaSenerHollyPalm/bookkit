@@ -34,7 +34,9 @@ open instead. The service worker only runs in the production build, so test offl
 | `src/kit.ts` | The same identity for the code, and `KEYS`: every localStorage key, all starting with `bookkit-`. |
 | `src/kit.css` | BookKit's colour: four tokens in both schemes, over kitshelf-ui's defaults. |
 | `public/favicon.svg`, `scripts/generate-icons.sh` | The icon and the PNGs made from it and from the maskable drawing in `docs/design/bookkit/icons/`. |
-| `src/app/`, `src/screens/` | The app shell, the router and the screens. |
+| `src/books/` | What a book is and the rules around it: states, dates in Turkish, matching, ISBNs, notes, the drawn cover. Tested, no UI. |
+| `src/storage/` | IndexedDB (`books`, `covers`) through `idb`, the migration steps, and what "Tüm verileri sil" removes. |
+| `src/app/`, `src/screens/`, `src/ui/` | The app shell and the router; the library, a book's page, the add and edit forms, the note sheet; BookKit's own parts. |
 | `.github/workflows/deploy.yml` | Tests, builds and publishes to GitHub Pages; started by hand until the release. |
 
 ## Icons

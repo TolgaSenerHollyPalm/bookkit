@@ -3,25 +3,28 @@ import toast from 'kitshelf-ui/app/toast.module.css'
 import { ToastProvider, Toasts } from 'kitshelf-ui/ui/Toast.tsx'
 import { useEffect } from 'react'
 import { KIT_NAME } from '../kit.ts'
+import AddBookScreen from '../screens/AddBookScreen.tsx'
+import BookScreen from '../screens/BookScreen.tsx'
+import EditBookScreen from '../screens/EditBookScreen.tsx'
 import HomeScreen from '../screens/HomeScreen.tsx'
 import SettingsScreen from '../screens/SettingsScreen.tsx'
 import AppDataProvider from './AppDataProvider.tsx'
-import { href, useRoute, type Route } from './router.ts'
+import { screenKey, useRoute, type Route } from './router.ts'
 import UpdatePrompt from './UpdatePrompt.tsx'
 
 export default function App() {
   const route = useRoute()
-  const address = href(route)
+  const screen = screenKey(route)
 
   useEffect(() => {
     window.scrollTo(0, 0)
-  }, [address])
+  }, [screen])
 
   return (
     <ToastProvider>
       <AppDataProvider>
-        {/* Keyed by address so a screen starts fresh whenever the route changes. */}
-        <CurrentScreen key={address} route={route} />
+        {/* Keyed by screen, so each one starts fresh; a library tab is the same screen. */}
+        <CurrentScreen key={screen} route={route} />
       </AppDataProvider>
       <div className={toast.stack}>
         <UpdatePrompt />
@@ -35,8 +38,14 @@ export default function App() {
 function CurrentScreen({ route }: { route: Route }) {
   switch (route.screen) {
     case 'home':
-      return <HomeScreen />
+      return <HomeScreen tab={route.tab} />
     case 'settings':
       return <SettingsScreen />
+    case 'add-manual':
+      return <AddBookScreen />
+    case 'book':
+      return <BookScreen bookId={route.bookId} />
+    case 'book-edit':
+      return <EditBookScreen bookId={route.bookId} />
   }
 }
