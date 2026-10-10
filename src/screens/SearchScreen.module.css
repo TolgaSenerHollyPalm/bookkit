@@ -272,10 +272,11 @@
   gap: 8px;
 }
 
+/* Equal thirds: sized by their words, the three overran a 360 px screen's dock. */
 .place {
   position: relative;
   display: flex;
-  flex: 1 1 auto;
+  flex: 1 1 0;
   min-width: 0;
   cursor: pointer;
 }
@@ -294,7 +295,7 @@
   flex: 1;
   place-items: center;
   min-height: var(--tap-size);
-  padding: 2px 10px;
+  padding: 2px 8px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-pill);
   background: var(--color-surface);
