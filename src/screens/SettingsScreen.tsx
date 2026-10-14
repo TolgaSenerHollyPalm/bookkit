@@ -4,8 +4,8 @@ import { readBackup, type Backup, type BackupPreview, type RestoreMode } from 'k
 import RestoreSheet from 'kitshelf-ui/backup/RestoreSheet.tsx'
 import { restoreBackup, saveBackup } from 'kitshelf-ui/backup/save.ts'
 import StorageStatus from 'kitshelf-ui/backup/StorageStatus.tsx'
+import WipeCard from 'kitshelf-ui/backup/WipeCard.tsx'
 import { readErrorMessage, RESTORE_FAILED_MESSAGE, restoreMessage, saveMessage, wipeWarning } from 'kitshelf-ui/backup/texts.ts'
-import { Button } from 'kitshelf-ui/ui/Button.tsx'
 import ChoiceGroup from 'kitshelf-ui/ui/ChoiceGroup.tsx'
 import ConfirmDialog from 'kitshelf-ui/ui/ConfirmDialog.tsx'
 import { AutoIcon, MoonIcon, SunIcon } from 'kitshelf-ui/ui/icons.tsx'
@@ -107,10 +107,7 @@ export default function SettingsScreen() {
 
   return (
     <Screen title="Ayarlar" back={href({ screen: 'home' })}>
-      <h2 className={text.sectionTitle}>Yedek</h2>
-      <BackupCard lastBackupAt={lastBackupAt} reminder={reminder} description={BACKUP_TEXTS.card} busy={saving} onSave={save} onFile={open} />
-
-      <h2 className={`${text.sectionTitle} ${styles.later}`}>Görünüm</h2>
+      <h2 className={text.sectionTitle}>Görünüm</h2>
       <ChoiceGroup
         label="Görünüm"
         hideLabel
@@ -146,14 +143,14 @@ export default function SettingsScreen() {
       </section>
       <p className={text.hint}>{PRIVACY}</p>
 
-      <h2 className={`${text.sectionTitle} ${styles.later}`}>Verileri sil</h2>
-      <p className={text.hint}>
-        Bu cihazdaki her şeyi siler: kitaplar, notlar, alıntılar, kapaklar ve ayarlar. Geri alınamaz; silmeden önce
-        yedek al.
-      </p>
-      <Button variant="danger" disabled={wiping} onClick={() => setConfirming(true)}>
-        {wiping ? 'Siliniyor…' : 'Tüm verileri sil'}
-      </Button>
+      <h2 className={`${text.sectionTitle} ${styles.later}`}>Yedek</h2>
+      <BackupCard lastBackupAt={lastBackupAt} reminder={reminder} description={BACKUP_TEXTS.card} busy={saving} onSave={save} onFile={open} />
+
+      <WipeCard
+        description="Bu cihazdaki her şeyi siler: kitaplar, notlar, alıntılar, kapaklar ve ayarlar. Geri alınamaz; silmeden önce yedek al."
+        busy={wiping}
+        onWipe={() => setConfirming(true)}
+      />
 
       <SettingsFooter version={buildTime} />
 

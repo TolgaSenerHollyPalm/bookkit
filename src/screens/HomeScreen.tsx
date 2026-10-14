@@ -1,4 +1,3 @@
-import BackupReminder from 'kitshelf-ui/backup/BackupReminder.tsx'
 import { LinkButton } from 'kitshelf-ui/ui/Button.tsx'
 import Chip from 'kitshelf-ui/ui/Chip.tsx'
 import { IconLink } from 'kitshelf-ui/ui/IconButton.tsx'
@@ -10,7 +9,7 @@ import text from 'kitshelf-ui/ui/text.module.css'
 import { useId } from 'react'
 import { coverOf, useAppData } from '../app/appData.ts'
 import { href, navigate } from '../app/router.ts'
-import { BACKUP_TEXTS, useBackupReminder } from '../backup/kitBackup.ts'
+import { useBackupReminder } from '../backup/kitBackup.ts'
 import { today } from '../books/dates.ts'
 import { booksOfTab, finishedThisYear, initialTab, latestNote, tabCounts, type Tab } from '../books/library.ts'
 import { authorLine, cardInfo, EMPTY_TAB, KIND_LABELS, noteMeta, STATUS_LABELS, TAB_LABELS } from '../books/texts.ts'
@@ -24,7 +23,7 @@ import styles from './HomeScreen.module.css'
 /** The library: three lists of books, and the newest note under them. */
 export default function HomeScreen({ tab }: { tab?: Tab }) {
   const { books, covers } = useAppData()
-  const { reminder, lastBackupAt, snooze } = useBackupReminder()
+  const { reminder } = useBackupReminder()
   const settings = href({ screen: 'settings' })
   const panelId = useId()
   const now = today()
@@ -60,7 +59,6 @@ export default function HomeScreen({ tab }: { tab?: Tab }) {
       }
     >
       <IosInstallHint dismissedKey={KEYS.installHintDismissed} />
-      {reminder.showBanner && <BackupReminder reminder={reminder} lastBackupAt={lastBackupAt} text={BACKUP_TEXTS.banner} href={settings} onDismiss={snooze} />}
 
       {/* An empty app should say what it is for before it asks for anything. */}
       {books.length === 0 ? (
